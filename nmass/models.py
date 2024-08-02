@@ -27,6 +27,7 @@ class Service(BaseXmlModel, tag="service"):
 
 class Script(BaseXmlModel, tag="script"):
     id: str = attr()
+    output: str = attr()
 
 
 class Port(BaseXmlModel, tag="port"):
