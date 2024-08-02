@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import Self
 
 from nmass.errors import NmapArgumentError, NmapNotInstalledError
-from nmass.models import NmapRun
+from nmass.models import Address, NmapRun
 from nmass.utils import as_root
 
 
@@ -54,6 +54,26 @@ class Nmap:
                 return NmapRun.from_xml(xml_out.read())
 
             return None
+
+    def with_step(self, model: NmapRun) -> Self:
+        # masscan 中同一个目标会有多个 host element
+        targets = set()
+        ports = set()
+        for host in model.hosts:
+            for addr in host.address:
+                match addr:
+                    case Address(addr=ipv4, addrtype="ipv4"):
+                        targets.add(ipv4)
+                    case Address(addr=ipv6, addrtype="ipv6"):
+                        self.with_ipv6()
+                        targets.add(ipv6)
+                    case Address(addr=_, addrtype="mac"):
+                        logging.warn("MAC is not support")
+            for port in host.ports.ports:
+                ports.add(port.portid)
+        self.with_targets(*targets)
+        self.with_ports(*ports)
+        return self
 
     ### TARGET SPECIFICATION ###
 
@@ -489,10 +509,13 @@ class Nmap:
 
     ### OUTPUT ###
 
+    def with_verbose(self, level: int = 1) -> Self:
+        self._args.append("-" + "v" * level)
+        return self
+
     # TODO:
     # -oN/-oX/-oS/-oG <file>: Output scan in normal, XML, s|<rIpt kIddi3, and Grepable format, respectively, to the given filename.
     # -oA <basename>: Output in the three major formats at once
-    # -v: Increase verbosity level (use -vv or more for greater effect)
     # -d: Increase debugging level (use -dd or more for greater effect)
     # --reason: Display the reason a port is in a particular state
     # --open: Only show open (or possibly open) ports
