@@ -245,8 +245,11 @@ class Nmap:
 
     ### PORT SPECIFICATION AND SCAN ORDER ###
 
-    def with_ports(self, *ports: list[str]) -> Self:
-        ports_str = ",".join(ports)
+    def with_ports(self, *ports: list[int | str]) -> Self:
+        if type(ports[0]) is int:
+            ports_str = ",".join([str(p) for p in ports])
+        else:
+            ports_str = ",".join(ports)
 
         # 多次调用 with_ports 添加端口
         place = -1
