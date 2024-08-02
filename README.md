@@ -391,3 +391,25 @@ if result := ms.run(with_output=False):
   }
   ```
 </details>
+
+### More?
+
+Masscan is fast, and nmap is powerful. Why not combine the two?🤩 Start by using masscan to quickly detect open ports in bulk, then use nmap to perform in-depth scans on these open ports!
+
+```python
+# This is just an example, is not recommended to run
+step1 = (
+    Masscan()
+    .with_targets("10.0.0.0/8")
+    .with_ports(80, 443)
+    .with_rate(10000)
+)
+step2 = (
+    Nmap()
+    .with_step(step1.run())
+    .with_service_info()
+    .with_scripts("http-title")
+    .with_verbose()
+)
+retult = step2.run()
+```
