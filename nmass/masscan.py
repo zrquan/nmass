@@ -2,23 +2,21 @@ import logging
 import shutil
 import subprocess
 import tempfile
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Self
 
 from nmass.errors import MasscanNotInstalledError
 from nmass.models import NmapRun
+from nmass.scanner import Scanner
 from nmass.utils import as_root
 
 
 @dataclass
-class Masscan:
-    _bin_path: str = ""
-    _args: list[str] = field(default_factory=lambda: [])
-
+class Masscan(Scanner):
     def __post_init__(self):
-        if self._bin_path == "":
+        if self.bin_path == "":
             if w := shutil.which("masscan"):
-                self._bin_path = w
+                self.bin_path = w
             else:
                 raise MasscanNotInstalledError()
 
@@ -35,7 +33,7 @@ class Masscan:
         :return: NmapRun object or None
         """
         with tempfile.NamedTemporaryFile(delete_on_close=True) as xml_out:
-            cmd = [self._bin_path, "-oX", xml_out.name, *self._args]
+            cmd = [self.bin_path, "-oX", xml_out.name, *self._args]
             try:
                 subprocess.run(
                     cmd,
@@ -54,18 +52,6 @@ class Masscan:
                 return NmapRun.from_xml(xml_out.read())
 
             return None
-
-    def with_targets(self, *targets: list[str]) -> Self:
-        self._args.extend(targets)
-        return self
-
-    def with_ports(self, *ports: list[int | str]) -> Self:
-        if type(ports[0]) is int:
-            ports_str = ",".join([str(p) for p in ports])
-        else:
-            ports_str = ",".join(ports)
-        self._args.extend(("--ports", ports_str))
-        return self
 
     def with_rate(self, rate: int) -> Self:
         self._args.extend(("--rate", str(rate)))
