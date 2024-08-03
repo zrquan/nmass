@@ -4,7 +4,7 @@ import shutil
 import subprocess
 import tempfile
 from dataclasses import dataclass, field
-from typing import Self
+from typing import Literal, Self
 
 from nmass.errors import NmapArgumentError, NmapNotInstalledError
 from nmass.models import Address, NmapRun
@@ -425,15 +425,109 @@ class Nmap:
         self._args.append(f"-T{int(template)}")
         return self
 
-    # TODO:
-    # --min-hostgroup/max-hostgroup <size>: Parallel host scan group sizes
-    # --min-parallelism/max-parallelism <numprobes>: Probe parallelization
-    # --min-rtt-timeout/max-rtt-timeout/initial-rtt-timeout <time>: Specifies probe round trip time.
-    # --max-retries <tries>: Caps number of port scan probe retransmissions.
-    # --host-timeout <time>: Give up on target after this long
-    # --scan-delay/--max-scan-delay <time>: Adjust delay between probes
-    # --min-rate <number>: Send packets no slower than <number> per second
-    # --max-rate <number>: Send packets no faster than <number> per second
+    def with_hostgroup_size(
+        self,
+        min: int | None = None,
+        max: int | None = None,
+    ) -> Self:
+        """Parallel host scan group sizes
+
+        :param min: same as --min-hostgroup, defaults to None
+        :param max: same as --max-hostgroup, defaults to None
+        """
+        if not (min or max):
+            raise NmapArgumentError("please provide at least one argument")
+        if min:
+            self._args.extend(("--min-hostgroup", str(min)))
+        if max:
+            self._args.extend(("--max-hostgroup", str(max)))
+        return self
+
+    def with_parallelism(
+        self,
+        min: int | None = None,
+        max: int | None = None,
+    ) -> Self:
+        """Probe parallelization
+
+        :param min: same as --min-parallelism, defaults to None
+        :param max: same as --max-parallelism, defaults to None
+        """
+        if not (min or max):
+            raise NmapArgumentError("please provide at least one argument")
+        if min:
+            self._args.extend(("--min-parallelism", str(min)))
+        if max:
+            self._args.extend(("--max-parallelism", str(max)))
+        return self
+
+    def with_rtt_timeout(
+        self,
+        min: int | None = None,
+        max: int | None = None,
+        initial: int | None = None,
+    ) -> Self:
+        """Specifies probe round trip time
+
+        :param min: same as --min-rtt-timeout, defaults to None
+        :param max: same as --max-rtt-timeout, defaults to None
+        :param initial: same as --initial-rtt-timeout, defaults to None
+        """
+        if not (min or max or initial):
+            raise NmapArgumentError("please provide at least one argument")
+        if min:
+            self._args.extend(("--min-rtt-timeout", str(min)))
+        if max:
+            self._args.extend(("--max-rtt-timeout", str(max)))
+        if initial:
+            self._args.extend(("--initial-rtt-timeout", str(initial)))
+        return self
+
+    def with_max_retries(self, tries: int) -> Self:
+        """Caps number of port scan probe retransmissions"""
+        self._args.extend(("--max-retries", str(tries)))
+        return self
+
+    def with_host_timeout(self, timeout: int) -> Self:
+        """Give up on target after this long"""
+        self._args.extend(("--host-timeout", str(timeout)))
+        return self
+
+    def with_scan_delay(
+        self,
+        time: int | None = None,
+        max_time: int | None = None,
+    ) -> Self:
+        """Adjust delay between probes
+
+        :param time: same as --scan-delay, defaults to None
+        :param max_time: same as --max-scan-delay, defaults to None
+        """
+        if not (time or max_time):
+            raise NmapArgumentError("please provide at least one argument")
+        if time:
+            self._args.extend(("--scan-delay", str(time)))
+        if max_time:
+            self._args.extend(("--max-scan-delay", str(max_time)))
+        return self
+
+    def with_rate(
+        self,
+        min: int | None = None,
+        max: int | None = None,
+    ) -> Self:
+        """Send packets no slower/faster than min/max per second
+
+        :param min: same as --min-rate, defaults to None
+        :param max: same as --max-rate, defaults to None
+        """
+        if not (min or max):
+            raise NmapArgumentError("please provide at least one argument")
+        if min:
+            self._args.extend(("--min-rate", str(min)))
+        if max:
+            self._args.extend(("--max-rate", str(max)))
+        return self
 
     ### FIREWALL/IDS EVASION AND SPOOFING ###
 
@@ -509,17 +603,50 @@ class Nmap:
 
     ### OUTPUT ###
 
+    def with_output_file(
+        self,
+        filename: str,
+        format: Literal["N", "X", "S", "G", "A"] = "N",
+    ) -> Self:
+        """Output scan in normal, XML, s|<rIpt kIddi3, and Grepable format
+
+        :param filename: name of output file, if format is A, it means basename (without extension)
+        :param format:
+          - N for normal
+          - X for XML
+          - S for s|<rIpt
+          - G for kIddi3
+          - A means output in the three major formats at once
+        """
+        self._args.extend((f"-o{format}", filename))
+        return self
+
+    # max level is?
     def with_verbose(self, level: int = 1) -> Self:
         self._args.append("-" + "v" * level)
         return self
 
+    # max level is?
+    def with_debugging(self, level: int = 1) -> Self:
+        self._args.append("-" + "d" * level)
+        return self
+
+    def with_reason(self) -> Self:
+        """Display the reason a port is in a particular state"""
+        self._args.append("--reason")
+        return self
+
+    def with_open_ports(self) -> Self:
+        """Only show open (or possibly open) ports"""
+        self._args.append("--open")
+        return self
+
+    def with_packet_trace(self) -> Self:
+        """Show all packets sent and received"""
+        self._args.append("--packet-trace")
+        return self
+
     # TODO:
-    # -oN/-oX/-oS/-oG <file>: Output scan in normal, XML, s|<rIpt kIddi3, and Grepable format, respectively, to the given filename.
-    # -oA <basename>: Output in the three major formats at once
-    # -d: Increase debugging level (use -dd or more for greater effect)
-    # --reason: Display the reason a port is in a particular state
-    # --open: Only show open (or possibly open) ports
-    # --packet-trace: Show all packets sent and received
     # --iflist: Print host interfaces and routes (for debugging)
     # --append-output: Append to rather than clobber specified output files
     # --resume <filename>: Resume an aborted scan
