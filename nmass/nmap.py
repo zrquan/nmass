@@ -1,12 +1,12 @@
+import asyncio
 import enum
 import logging
 import shutil
 import subprocess
-import tempfile
 from dataclasses import dataclass
 from typing import Literal, Self
 
-from nmass.errors import NmapArgumentError, NmapNotInstalledError
+from nmass.errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
 from nmass.models import NmapRun
 from nmass.scanner import Scanner
 from nmass.utils import as_root
@@ -32,26 +32,26 @@ class Nmap(Scanner):
         :param with_output: print nmap's output, defaults to True
         :return: NmapRun object or None
         """
-        with tempfile.NamedTemporaryFile(delete_on_close=True) as xml_out:
-            cmd = [self.bin_path, "-oX", xml_out.name, *self._args]
-            try:
-                subprocess.run(
-                    cmd,
-                    check=True,
-                    timeout=timeout,
-                    capture_output=not with_output,
-                )
-            except subprocess.TimeoutExpired:
-                logging.warn("nmap scanning timeout")
-            except subprocess.CalledProcessError as e:
-                logging.error(f"nmap's return code is {e.returncode}")
-                logging.error(e.stderr.decode())
-            except Exception as why:
-                logging.exception(why)
-            else:
-                return NmapRun.from_xml(xml_out.read())
+        try:
+            return self._run_command(timeout, with_output)
+        except subprocess.CalledProcessError as e:
+            raise NmapExecutionError(retcode=e.returncode)
+        except subprocess.TimeoutExpired:
+            logging.warn("nmap scanning timeout")
+            raise
 
-            return None
+    async def arun(
+        self,
+        timeout: float | None = None,
+        with_output: bool = True,
+    ) -> NmapRun | None:
+        try:
+            return await self._arun_command(timeout, with_output)
+        except subprocess.CalledProcessError as e:
+            raise NmapExecutionError(retcode=e.returncode)
+        except asyncio.TimeoutError:
+            logging.warn("asynchronous nmap scanning timeout")
+            raise
 
     ### TARGET SPECIFICATION ###
 

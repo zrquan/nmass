@@ -1,11 +1,11 @@
+import asyncio
 import logging
 import shutil
 import subprocess
-import tempfile
 from dataclasses import dataclass
 from typing import Self
 
-from nmass.errors import MasscanNotInstalledError
+from nmass.errors import MasscanExecutionError, MasscanNotInstalledError
 from nmass.models import NmapRun
 from nmass.scanner import Scanner
 from nmass.utils import as_root
@@ -32,26 +32,27 @@ class Masscan(Scanner):
         :param with_output: print masscan's output, defaults to True
         :return: NmapRun object or None
         """
-        with tempfile.NamedTemporaryFile(delete_on_close=True) as xml_out:
-            cmd = [self.bin_path, "-oX", xml_out.name, *self._args]
-            try:
-                subprocess.run(
-                    cmd,
-                    check=True,
-                    timeout=timeout,
-                    capture_output=not with_output,
-                )
-            except subprocess.TimeoutExpired:
-                logging.warn("masscan scanning timeout")
-            except subprocess.CalledProcessError as e:
-                logging.error(f"masscan's return code is {e.returncode}")
-                logging.error(e.stderr.decode())
-            except Exception as why:
-                logging.exception(why)
-            else:
-                return NmapRun.from_xml(xml_out.read())
+        try:
+            return self._run_command(timeout, with_output)
+        except subprocess.CalledProcessError as e:
+            raise MasscanExecutionError(retcode=e.returncode)
+        except subprocess.TimeoutExpired:
+            logging.warn("masscan scanning timeout")
+            raise
 
-            return None
+    @as_root
+    async def arun(
+        self,
+        timeout: float | None = None,
+        with_output: bool = True,
+    ) -> NmapRun | None:
+        try:
+            return await self._arun_command(timeout, with_output)
+        except subprocess.CalledProcessError as e:
+            raise MasscanExecutionError(retcode=e.returncode)
+        except asyncio.TimeoutError:
+            logging.warn("asynchronous masscan scanning timeout")
+            raise
 
     def with_rate(self, rate: int) -> Self:
         self._args.extend(("--rate", str(rate)))

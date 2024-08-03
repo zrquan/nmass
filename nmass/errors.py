@@ -11,7 +11,7 @@ class NmapArgumentError(Exception):
         super().__init__(message, nmap_arg)
 
 
-class NmapExecutinoError(Exception):
+class NmapExecutionError(Exception):
     def __init__(self, message: str, retcode: int) -> None:
         super().__init__(message, retcode)
 
@@ -29,6 +29,6 @@ class MasscanArgumentError(Exception):
         super().__init__(message, masscan_arg)
 
 
-class MasscanExecutinoError(Exception):
+class MasscanExecutionError(Exception):
     def __init__(self, message: str, retcode: int) -> None:
         super().__init__(message, retcode)

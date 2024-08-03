@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 pydantic-xml = "^2.11.0"
+aiofiles = "^24.1.0"
 
 [build-system]
 requires = ["poetry-core"]

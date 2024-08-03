@@ -1,7 +1,12 @@
+import asyncio
+import logging
+import subprocess
+import tempfile
 from abc import abstractmethod
 from dataclasses import dataclass, field
-import logging
 from typing import Self
+
+from aiofiles import tempfile as atempfile
 
 from nmass.models import Address, NmapRun
 
@@ -18,6 +23,72 @@ class Scanner:
         with_output: bool = True,
     ) -> NmapRun | None:
         raise NotImplementedError()
+
+    def _run_command(
+        self,
+        timeout: float | None = None,
+        with_output: bool = True,
+    ) -> NmapRun | None:
+        with tempfile.NamedTemporaryFile() as xml_out:
+            cmd = [self.bin_path, "-oX", xml_out.name, *self._args]
+            try:
+                subprocess.run(
+                    cmd,
+                    check=True,
+                    timeout=timeout,
+                    capture_output=not with_output,
+                )
+            except subprocess.TimeoutExpired:
+                raise
+            except subprocess.CalledProcessError as e:
+                logging.error(e.stderr.decode())
+                raise
+            except Exception as why:
+                logging.exception(why)
+            else:
+                return NmapRun.from_xml(xml_out.read())
+
+            return None
+
+    @abstractmethod
+    async def arun(
+        self,
+        timeout: float | None = None,
+        with_output: bool = True,
+    ) -> NmapRun | None:
+        raise NotImplementedError()
+
+    async def _arun_command(
+        self,
+        timeout: float | None = None,
+        with_output: bool = True,
+    ) -> NmapRun | None:
+        async with atempfile.NamedTemporaryFile() as xml_out:
+            proc = await asyncio.create_subprocess_exec(
+                self.bin_path,
+                *["-oX", xml_out.name, *self._args],
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            try:
+                stdout, stderr = await asyncio.wait_for(
+                    proc.communicate(), timeout=timeout
+                )
+                # TODO: 运行中实时打印输出
+                if with_output:
+                    print(stdout.decode())
+            except asyncio.TimeoutError:
+                raise
+            except Exception as why:
+                logging.exception(why)
+            else:
+                if proc.returncode != 0:
+                    logging.error(stderr.decode())
+                    raise subprocess.CalledProcessError(returncode=proc.returncode)
+                else:
+                    return NmapRun.from_xml(await xml_out.read())
+
+            return None
 
     def with_step(self, model: NmapRun) -> Self:
         # masscan 中同一个目标会有多个 host element
