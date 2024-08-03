@@ -74,10 +74,34 @@ class Masscan(Scanner):
         self._args.extend(("--adapter-ip", ip))
         return self
 
-    def with_adapter_mac(self, mac: str) -> Self:
-        self._args.extend(("--adapter-mac", mac))
+    def with_adapter_port(self, port: int) -> Self:
+        self._args.extend(("--adapter-port", str(port)))
         return self
 
-    def with_router_mac(self, mac: str) -> Self:
-        self._args.extend(("--router-mac", mac))
+    def with_adapter_mac(self, address: str) -> Self:
+        self._args.extend(("--adapter-mac", address))
+        return self
+
+    def with_router_mac(self, address: str) -> Self:
+        self._args.extend(("--router-mac", address))
+        return self
+
+    def with_retries(self, retries: int) -> Self:
+        self._args.extend(("--retries", str(retries)))
+        return self
+
+    def with_pcap_payloads(self, filename: str) -> Self:
+        self._args.extend(("--pcap-payloads", filename))
+        return self
+
+    def with_nmap_payloads(self, filename: str) -> Self:
+        self._args.extend(("--nmap-payloads", filename))
+        return self
+
+    def with_http_user_agent(self, user_agent: str) -> Self:
+        self._args.extend(("--http-user-agent", user_agent))
+        return self
+
+    def with_open_only(self) -> Self:
+        self._args.append("--open-only")
         return self
