@@ -3,12 +3,16 @@ name = "nmass"
 version = "0.1.0"
 description = "A python3 library that makes it easier to use nmap and masscan"
 authors = ["4shen0ne <4shen.01@gmail.com>"]
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
 pydantic-xml = "^2.11.0"
 aiofiles = "^24.1.0"
+
+[tool.poetry-dynamic-versioning]
+enable = true
 
 [build-system]
 requires = ["poetry-core"]
