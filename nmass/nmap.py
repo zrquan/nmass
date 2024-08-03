@@ -574,7 +574,7 @@ class Nmap(Scanner):
         self._args.append("--reason")
         return self
 
-    def with_open_ports(self) -> Self:
+    def without_closed_ports(self) -> Self:
         """Only show open (or possibly open) ports"""
         self._args.append("--open")
         return self

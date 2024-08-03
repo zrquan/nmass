@@ -79,3 +79,6 @@ class Scanner:
     def with_target_exclusion_input(self, input_filename: str) -> Self:
         self._args.extend(("--excludefile", input_filename))
         return self
+
+    def without_closed_ports(self) -> Self:
+        pass

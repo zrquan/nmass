@@ -102,6 +102,6 @@ class Masscan(Scanner):
         self._args.extend(("--http-user-agent", user_agent))
         return self
 
-    def with_open_only(self) -> Self:
+    def without_closed_ports(self) -> Self:
         self._args.append("--open-only")
         return self
