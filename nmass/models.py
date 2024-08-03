@@ -9,19 +9,20 @@ MODE = "ordered"
 
 
 class ScanInfo(BaseXmlModel, tag="scaninfo"):
+    # TODO: (syn|ack|bounce|connect|null|xmas|window|maimon|fin|udp|sctpinit|sctpcookieecho|ipproto)
     type: str = attr()
-    protocol: str = attr()
-    numservices: str = attr(default=None)
+    protocol: Literal["ip", "tcp", "udp", "sctp"] = attr()
+    numservices: int = attr(default=None)
     services: str = attr(default=None)
 
 
 class Service(BaseXmlModel, tag="service"):
     name: str = attr()
-    banner: str = attr(default=None)  # masscan
+    banner: str = attr(default=None)  # for masscan
     product: str = attr(default=None)
     version: str = attr(default=None)
-    method: str = attr(default=None)
-    confidence: str = attr(name="conf", default=None)
+    method: Literal["table", "probed"] = attr(default=None)
+    confidence: int = attr(name="conf", default=None)
     cpe: str = element(default=None)
 
 
@@ -36,11 +37,17 @@ class Port(BaseXmlModel, tag="port"):
         reason: str = attr()
         reason_ttl: str = attr()
 
-    protocol: str = attr()
+    protocol: Literal["ip", "tcp", "udp", "sctp"] = attr()
     portid: int = attr()
     state: State
     service: Service = element(default=None)
     scripts: list[Script] = element(default=None)
+
+
+class PortUsed(BaseXmlModel, tag="portused"):
+    state: Literal["open", "closed", "filtered"] = attr()
+    proto: Literal["ip", "tcp", "udp", "sctp"] = attr()
+    portid: int = attr()
 
 
 class Ports(BaseXmlModel, tag="ports"):
@@ -50,15 +57,32 @@ class Ports(BaseXmlModel, tag="ports"):
 
 class Hostname(BaseXmlModel, tag="hostname"):
     name: str = attr()
-    type: str = attr()
+    type: Literal["user", "PTR"] = attr()
 
 
 class Hostnames(BaseXmlModel, tag="hostnames"):
     hostnames: list[Hostname] = element(default=None)
 
 
+class OSClass(BaseXmlModel, tag="osclass"):
+    type: str = attr()
+    vendor: str = attr()
+    osfamily: str = attr()
+    osgen: str = attr()
+    accuracy: int = attr()
+    cpe: str = element(default=None)
+
+
+class OSMatch(BaseXmlModel, tag="osmatch"):
+    name: str = attr()
+    accuracy: int = attr()
+    line: int = attr()
+    osclasses: list[OSClass]
+
+
 class OS(BaseXmlModel, tag="os"):
-    pass
+    used_ports: list[PortUsed]
+    osmatches: list[OSMatch]
 
 
 class Trace(BaseXmlModel, tag="trace"):
@@ -76,35 +100,46 @@ class Host(BaseXmlModel, tag="host"):
         reason: str = attr()
         reason_ttl: str = attr()
 
-    status: Status = element(default=None)
+    status: Status = element(default=None)  # None for masscan
     address: list[Address]
     hostnames: Hostnames = element(default=None)
     ports: Ports
     os: OS = element(default=None)
     uptime: dict[str, str] = element(default=None)
-    distance: dict[str, str] = element(default=None)
+    distance: dict[str, int] = element(default=None)
     tcpsequence: dict[str, str] = element(default=None)
     ipidsequence: dict[str, str] = element(default=None)
     tcptssequence: dict[str, str] = element(default=None)
     trace: Trace = element(default=None)
-    times: dict[str, str] = element(default=None)
+    times: dict[str, int] = element(default=None)
+
+
+class HostHint(BaseXmlModel, tag="hosthint"):
+    status: Host.Status = element()
+    address: list[Address]
+    hostnames: Hostnames = element(default=None)
 
 
 class NmapRun(BaseXmlModel, tag="nmaprun", search_mode=MODE):
+    """
+    This is the data model that maps with the Nmap (also Masscan) XML output.
+    Refer to https://nmap.org/book/nmap-dtd.html for details.
+    """
+
     class Stats(BaseXmlModel, tag="runstats"):
         finished: dict[str, str] = element()
-        hosts: dict[str, str] = element()
+        hosts: dict[str, int] = element()
 
-    scanner: str = attr()
+    scanner: Literal["nmap", "masscan"] = attr()
     args: str = attr(default=None)
-    start: str = attr()
+    start: int = attr(default=None)
     start_time: str = attr(name="startstr", default=None)
     version: str = attr()
     xmloutputversion: str = attr()
 
     scaninfo: ScanInfo
-    # verbose: dict[str, str] = element()
-    # debugging: dict[str, str] = element()
-    # hosthint: HostHint
+    verbose: dict[str, int] = element(default=None)  # None for masscan
+    debugging: dict[str, int] = element(default=None)  # None for masscan
+    hosthint: HostHint = element(default=None)
     hosts: list[Host]
     stats: Stats
