@@ -2,6 +2,7 @@ import asyncio
 import logging
 import subprocess
 import tempfile
+import time
 from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Self
@@ -17,18 +18,10 @@ class Scanner:
     _args: list[str] = field(default_factory=lambda: [], init=False)
 
     @abstractmethod
-    def run(
-        self,
-        timeout: float | None = None,
-        with_output: bool = True,
-    ) -> NmapRun | None:
+    def run(self, timeout: float | None, with_output: bool) -> NmapRun | None:
         raise NotImplementedError()
 
-    def _run_command(
-        self,
-        timeout: float | None = None,
-        with_output: bool = True,
-    ) -> NmapRun | None:
+    def _run_command(self, timeout: float | None, with_output: bool) -> NmapRun | None:
         with tempfile.NamedTemporaryFile() as xml_out:
             cmd = [self.bin_path, "-oX", xml_out.name, *self._args]
             try:
@@ -51,39 +44,39 @@ class Scanner:
             return None
 
     @abstractmethod
-    async def arun(
-        self,
-        timeout: float | None = None,
-        with_output: bool = True,
-    ) -> NmapRun | None:
+    async def arun(self, timeout: float | None, with_output: bool) -> NmapRun | None:
         raise NotImplementedError()
 
-    async def _arun_command(
-        self,
-        timeout: float | None = None,
-        with_output: bool = True,
-    ) -> NmapRun | None:
+    async def _arun_command(self, timeout: float | None, with_output: bool) -> NmapRun | None:
         async with atempfile.NamedTemporaryFile() as xml_out:
             proc = await asyncio.create_subprocess_exec(
                 self.bin_path,
                 *["-oX", xml_out.name, *self._args],
                 stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.STDOUT,
             )
+
+            if with_output:
+                start_time = time.time()
+                killed = False
+                async for line in proc.stdout:
+                    print(line.decode().rstrip())
+                    if killed:
+                        continue
+                    if timeout and time.time() - start_time > timeout:
+                        proc.kill()
+                        killed = True
+                if killed:
+                    raise asyncio.TimeoutError()
+
             try:
-                stdout, stderr = await asyncio.wait_for(
-                    proc.communicate(), timeout=timeout
-                )
-                # TODO: 运行中实时打印输出
-                if with_output:
-                    print(stdout.decode())
+                await asyncio.wait_for(proc.wait(), timeout=timeout)
             except asyncio.TimeoutError:
                 raise
             except Exception as why:
                 logging.exception(why)
             else:
                 if proc.returncode != 0:
-                    logging.error(stderr.decode())
                     raise subprocess.CalledProcessError(returncode=proc.returncode)
                 else:
                     return NmapRun.from_xml(await xml_out.read())

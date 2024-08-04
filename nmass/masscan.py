@@ -24,7 +24,7 @@ class Masscan(Scanner):
     def run(
         self,
         timeout: float | None = None,
-        with_output: bool = True,
+        with_output: bool = False,
     ) -> NmapRun | None:
         """Run masscan command
 
@@ -44,7 +44,8 @@ class Masscan(Scanner):
     async def arun(
         self,
         timeout: float | None = None,
-        with_output: bool = True,
+        # FIXME: 异步执行 masscan 时，没有输出进度和倒计时那一行
+        with_output: bool = False,
     ) -> NmapRun | None:
         try:
             return await self._arun_command(timeout, with_output)

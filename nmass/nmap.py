@@ -24,7 +24,7 @@ class Nmap(Scanner):
     def run(
         self,
         timeout: float | None = None,
-        with_output: bool = True,
+        with_output: bool = False,
     ) -> NmapRun | None:
         """Run nmap command
 
@@ -43,7 +43,7 @@ class Nmap(Scanner):
     async def arun(
         self,
         timeout: float | None = None,
-        with_output: bool = True,
+        with_output: bool = False,
     ) -> NmapRun | None:
         try:
             return await self._arun_command(timeout, with_output)
