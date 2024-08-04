@@ -2,11 +2,6 @@ from typing import Literal
 
 from pydantic_xml import BaseXmlModel, attr, element
 
-# TODO: 完善数据模型，等完全覆盖 Nmap XML 之后可使用默认 strict 模式
-# https://nmap.org/book/nmap-dtd.html
-# https://pydantic-xml.readthedocs.io/en/latest/pages/data-binding/elements.html#elements-search-mode
-MODE = "ordered"
-
 
 class ScanInfo(BaseXmlModel, tag="scaninfo"):
     # TODO: (syn|ack|bounce|connect|null|xmas|window|maimon|fin|udp|sctpinit|sctpcookieecho|ipproto)
@@ -120,7 +115,7 @@ class HostHint(BaseXmlModel, tag="hosthint"):
     hostnames: Hostnames = element(default=None)
 
 
-class NmapRun(BaseXmlModel, tag="nmaprun", search_mode=MODE):
+class NmapRun(BaseXmlModel, tag="nmaprun"):
     """
     This is the data model that maps with the Nmap (also Masscan) XML output.
     Refer to https://nmap.org/book/nmap-dtd.html for details.
