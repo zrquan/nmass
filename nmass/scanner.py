@@ -4,8 +4,9 @@ import subprocess
 import tempfile
 import time
 from abc import abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Self
+from typing import Any, Self
 
 from aiofiles import tempfile as atempfile
 
@@ -16,6 +17,7 @@ from nmass.models import Address, NmapRun
 class Scanner:
     bin_path: str = ""
     _args: list[str] = field(default_factory=lambda: [], init=False)
+    _callbacks: list[Callable[[NmapRun], Any]] = field(default_factory=lambda: [], init=False)
 
     @abstractmethod
     def run(self, timeout: float | None, with_output: bool) -> NmapRun | None:
@@ -39,7 +41,12 @@ class Scanner:
             except Exception as why:
                 logging.exception(why)
             else:
-                return NmapRun.from_xml(xml_out.read())
+                result = NmapRun.from_xml(xml_out.read())
+                if len(self._callbacks) > 0:
+                    for f in self._callbacks:
+                        # 回调函数对 result 的修改会影响返回结果
+                        f(result)
+                return result
 
             return None
 
@@ -101,6 +108,10 @@ class Scanner:
                 ports.add(port.portid)
         self.with_targets(*targets)
         self.with_ports(*ports)
+        return self
+
+    def with_callbacks(self, *callbacks: Callable[[NmapRun], Any]) -> Self:
+        self._callbacks.extend(callbacks)
         return self
 
     def with_targets(self, *targets: list[str]) -> Self:
