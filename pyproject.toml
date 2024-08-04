@@ -7,12 +7,15 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.11"
 pydantic-xml = "^2.11.0"
 aiofiles = "^24.1.0"
 
 [tool.poetry-dynamic-versioning]
 enable = true
+
+[tool.ruff]
+line-length = 100
 
 [build-system]
 requires = ["poetry-core"]
