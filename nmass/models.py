@@ -115,6 +115,14 @@ class HostHint(BaseXmlModel, tag="hosthint"):
     hostnames: Hostnames = element(default=None)
 
 
+class TaskProgress(BaseXmlModel, tag="taskprogress"):
+    task: str = attr()
+    time: str = attr()
+    percent: float = attr()
+    remaining: int = attr(default=None)
+    etc: str = attr(default=None)
+
+
 class NmapRun(BaseXmlModel, tag="nmaprun"):
     """
     This is the data model that maps with the Nmap (also Masscan) XML output.
@@ -136,5 +144,6 @@ class NmapRun(BaseXmlModel, tag="nmaprun"):
     verbose: dict[str, int] = element(default=None)  # None for masscan
     debugging: dict[str, int] = element(default=None)  # None for masscan
     hosthint: HostHint = element(default=None)
+    taskprogress: list[TaskProgress] = element(default=None)
     hosts: list[Host]
     stats: Stats
