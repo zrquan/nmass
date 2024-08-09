@@ -4,6 +4,7 @@ import logging
 import shutil
 import subprocess
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Literal, Self
 
 from nmass.errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
@@ -16,7 +17,7 @@ from nmass.utils import as_root
 class Nmap(Scanner):
     def __post_init__(self):
         """Initialize Nmap instance and verify if nmap is installed."""
-        if self.bin_path == "":
+        if self.bin_path == "" or not Path(self.bin_path).is_file():
             if w := shutil.which("nmap"):
                 self.bin_path = w
             else:

@@ -11,6 +11,7 @@ from typing import Any, Self
 from aiofiles import tempfile as atempfile
 
 from nmass.models import Address, NmapRun
+from nmass.utils import validate_target
 
 
 @dataclass
@@ -115,6 +116,7 @@ class Scanner:
         return self
 
     def with_targets(self, *targets: list[str]) -> Self:
+        [validate_target(t) for t in targets]
         self._args.extend(targets)
         return self
 
