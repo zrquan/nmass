@@ -36,7 +36,7 @@ class Masscan(Scanner):
         try:
             return self._run_command(timeout, with_output)
         except subprocess.CalledProcessError as e:
-            raise MasscanExecutionError(retcode=e.returncode)
+            raise MasscanExecutionError(retcode=e.returncode, message=str(e))
         except subprocess.TimeoutExpired:
             logging.warn("masscan scanning timeout")
             raise
@@ -57,7 +57,7 @@ class Masscan(Scanner):
         try:
             return await self._arun_command(timeout, with_output)
         except subprocess.CalledProcessError as e:
-            raise MasscanExecutionError(retcode=e.returncode)
+            raise MasscanExecutionError(retcode=e.returncode, message=str(e))
         except asyncio.TimeoutError:
             logging.warn("asynchronous masscan scanning timeout")
             raise

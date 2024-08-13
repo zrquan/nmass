@@ -122,12 +122,12 @@ class Scanner:
         self._callbacks.extend(callbacks)
         return self
 
-    def with_targets(self, *targets: list[str]) -> Self:
+    def with_targets(self, *targets: str) -> Self:
         [validate_target(t) for t in targets]
         self._args.extend(targets)
         return self
 
-    def with_ports(self, *ports: list[int | str]) -> Self:
+    def with_ports(self, *ports: int | str) -> Self:
         if not ports:
             raise ValueError("At least one port must be provided.")
 
@@ -144,7 +144,7 @@ class Scanner:
         self._args.extend(("-iL", input_filename))
         return self
 
-    def with_target_exclusion(self, *targets: list[str]) -> Self:
+    def with_target_exclusion(self, *targets: str) -> Self:
         self._args.extend(("--exclude", ",".join(targets)))
         return self
 

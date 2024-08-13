@@ -37,7 +37,7 @@ class Nmap(Scanner):
         try:
             return self._run_command(timeout, with_output)
         except subprocess.CalledProcessError as e:
-            raise NmapExecutionError(retcode=e.returncode)
+            raise NmapExecutionError(retcode=e.returncode, message=str(e.stderr))
         except subprocess.TimeoutExpired:
             logging.warn("nmap scanning timeout")
             raise
@@ -56,7 +56,7 @@ class Nmap(Scanner):
         try:
             return await self._arun_command(timeout, with_output)
         except subprocess.CalledProcessError as e:
-            raise NmapExecutionError(retcode=e.returncode)
+            raise NmapExecutionError(retcode=e.returncode, message=str(e))
         except asyncio.TimeoutError:
             logging.warn("asynchronous nmap scanning timeout")
             raise
@@ -90,7 +90,7 @@ class Nmap(Scanner):
 
     # TODO: -PS/PA/PU/PY 应该只能选其一
 
-    def with_syn_discovery(self, *ports: list[str]) -> Self:
+    def with_syn_discovery(self, *ports: str) -> Self:
         """TCP SYN Discovery (-PS): Send SYN packets to specified ports.
 
         :param ports: Ports to perform SYN discovery on
@@ -99,7 +99,7 @@ class Nmap(Scanner):
         self._args.append(f"-PS{ports_str}")
         return self
 
-    def with_ack_discovery(self, *ports: list[str]) -> Self:
+    def with_ack_discovery(self, *ports: str) -> Self:
         """TCP ACK Discovery (-PA): Send ACK packets to specified ports.
 
         :param ports: Ports to perform ACK discovery on
@@ -108,7 +108,7 @@ class Nmap(Scanner):
         self._args.append(f"-PA{ports_str}")
         return self
 
-    def with_udp_discovery(self, *ports: list[str]) -> Self:
+    def with_udp_discovery(self, *ports: str) -> Self:
         """UDP Discovery (-PU): Send UDP packets to specified ports.
 
         :param ports: Ports to perform UDP discovery on
@@ -117,7 +117,7 @@ class Nmap(Scanner):
         self._args.append(f"-PU{ports_str}")
         return self
 
-    def with_sctp_discovery(self, *ports: list[str]) -> Self:
+    def with_sctp_discovery(self, *ports: str) -> Self:
         """SCTP INIT Discovery (-PY): Send SCTP INIT packets to specified ports.
 
         :param ports: Ports to perform SCTP discovery on
@@ -143,7 +143,7 @@ class Nmap(Scanner):
         self._args.append("-PM")
         return self
 
-    def with_ip_protocol_ping_discovery(self, *protocols: list[str]) -> Self:
+    def with_ip_protocol_ping_discovery(self, *protocols: str) -> Self:
         """IP Protocol Ping Discovery (-PO): Send packets for specified protocols.
 
         :param protocols: Protocols to use for IP ping discovery
@@ -164,7 +164,7 @@ class Nmap(Scanner):
         self._args.append("-R")
         return self
 
-    def with_custom_dns_servers(self, *servers: list[str]) -> Self:
+    def with_custom_dns_servers(self, *servers: str) -> Self:
         """Specify custom DNS servers (--dns-servers).
 
         :param servers: List of DNS servers to use
@@ -246,7 +246,7 @@ class Nmap(Scanner):
         FlagNS = 256
 
     # TODO: https://nmap.org/book/scan-methods-custom-scanflags.html
-    def with_tcp_scan_flags(self, *flags: list[TCPFlag]) -> Self:
+    def with_tcp_scan_flags(self, *flags: TCPFlag) -> Self:
         """Custom TCP Scan Flags (--scanflags).
 
         :param flags: List of TCP flags to set
@@ -296,7 +296,7 @@ class Nmap(Scanner):
 
     ### PORT SPECIFICATION AND SCAN ORDER ###
 
-    def with_port_exclusion(self, *ports: list[str]) -> Self:
+    def with_port_exclusion(self, *ports: str) -> Self:
         """Exclude specified ports from scanning (--exclude-ports).
 
         :param ports: List of ports to exclude
@@ -386,7 +386,7 @@ class Nmap(Scanner):
         self._args.append("-sC")
         return self
 
-    def with_scripts(self, *scripts: list[str]) -> Self:
+    def with_scripts(self, *scripts: str) -> Self:
         """Run specified scripts (--script).
 
         :param scripts: List of scripts to run
@@ -395,7 +395,7 @@ class Nmap(Scanner):
         self._args.append(f"--script={scripts_str}")
         return self
 
-    def with_script_arguments(self, **arguments: dict[str, str]) -> Self:
+    def with_script_arguments(self, **arguments: str) -> Self:
         """Pass arguments to scripts (--script-args).
 
         :param arguments: Dictionary of script arguments
@@ -427,7 +427,7 @@ class Nmap(Scanner):
         self._args.append("--script-updatedb")
         return self
 
-    def with_script_help(self, *scripts: list[str]) -> Self:
+    def with_script_help(self, *scripts: str) -> Self:
         """Show help for specified scripts (--script-help).
 
         :param scripts: List of scripts to show help for
@@ -491,7 +491,7 @@ class Nmap(Scanner):
         :raises NmapArgumentError: If both min and max are None
         """
         if not (min or max):
-            raise NmapArgumentError("please provide at least one argument")
+            raise NmapArgumentError("please provide at least one argument", nmap_arg="hostgroup")
         if min:
             self._args.extend(("--min-hostgroup", str(min)))
         if max:
@@ -510,7 +510,10 @@ class Nmap(Scanner):
         :raises NmapArgumentError: If both min and max are None
         """
         if not (min or max):
-            raise NmapArgumentError("please provide at least one argument")
+            raise NmapArgumentError(
+                "please provide at least one argument",
+                nmap_arg="parallelism",
+            )
         if min:
             self._args.extend(("--min-parallelism", str(min)))
         if max:
@@ -531,7 +534,7 @@ class Nmap(Scanner):
         :raises NmapArgumentError: If all parameters are None
         """
         if not (min or max or initial):
-            raise NmapArgumentError("please provide at least one argument")
+            raise NmapArgumentError("please provide at least one argument", nmap_arg="rtt-timeout")
         if min:
             self._args.extend(("--min-rtt-timeout", str(min)))
         if max:
@@ -568,7 +571,7 @@ class Nmap(Scanner):
         :raises NmapArgumentError: If both time and max_time are None
         """
         if not (time or max_time):
-            raise NmapArgumentError("please provide at least one argument")
+            raise NmapArgumentError("please provide at least one argument", nmap_arg="scan-delay")
         if time:
             self._args.extend(("--scan-delay", str(time)))
         if max_time:
@@ -587,7 +590,7 @@ class Nmap(Scanner):
         :raises NmapArgumentError: If both min and max are None
         """
         if not (min or max):
-            raise NmapArgumentError("please provide at least one argument")
+            raise NmapArgumentError("please provide at least one argument", nmap_arg="rate")
         if min:
             self._args.extend(("--min-rate", str(min)))
         if max:
@@ -616,7 +619,7 @@ class Nmap(Scanner):
         self._args.extend(("--mtu", str(offset)))
         return self
 
-    def with_decoys(self, *decoys: list[str]) -> Self:
+    def with_decoys(self, *decoys: str) -> Self:
         """Use decoys to obfuscate scan origin (-D).
 
         :param decoys: List of decoy IP addresses
@@ -649,7 +652,7 @@ class Nmap(Scanner):
         self._args.extend(("--source-port", str(port)))
         return self
 
-    def with_proxies(self, *proxies: list[str]) -> Self:
+    def with_proxies(self, *proxies: str) -> Self:
         """Use specified proxies for scanning (--proxies).
 
         :param proxies: List of proxy addresses
