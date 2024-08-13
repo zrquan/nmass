@@ -1,3 +1,4 @@
+import ctypes
 import os
 import string
 from functools import wraps
@@ -6,18 +7,29 @@ from nmass.errors import NmapArgumentError
 
 
 def as_root(func):
-    """@as_root 装饰的函数需要高权限用户执行（比如 Linux 下的 root 用户）
+    """Decorator to ensure the decorated function is executed with root/administrator privileges.
 
-    :param func: 需要 root 权限执行的函数
+    :param func: Function that requires elevated privileges to run.
     """
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # TODO:  Windows OS
-        if os.getuid() == 0:
-            return func(*args, **kwargs)
+        if os.name == "nt":
+            # Windows OS: Check for administrator privileges
+            try:
+                is_admin = ctypes.windll.shell32.IsUserAnAdmin()
+            except Exception:
+                is_admin = False
+            if is_admin:
+                return func(*args, **kwargs)
+            else:
+                raise PermissionError(f"{func.__name__} needs to be executed as an administrator.")
         else:
-            raise PermissionError(f"{func=} need to execute as root")
+            # Unix-like OS: Check for root privileges
+            if os.getuid() == 0:
+                return func(*args, **kwargs)
+            else:
+                raise PermissionError(f"{func.__name__} needs to be executed as root.")
 
     return wrapper
 

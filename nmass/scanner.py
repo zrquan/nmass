@@ -6,7 +6,7 @@ import time
 from abc import abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Self
+from typing import Any, Self, Set
 
 from aiofiles import tempfile as atempfile
 
@@ -37,13 +37,13 @@ class Scanner:
             except subprocess.TimeoutExpired:
                 raise
             except subprocess.CalledProcessError as e:
-                logging.error(e.stderr.decode())
+                logging.error(f"Command failed with error: {e.stderr.decode()}")
                 raise
             except Exception as why:
-                logging.exception(why)
+                logging.exception(f"Unexpected error running command: {why}")
             else:
                 result = NmapRun.from_xml(xml_out.read())
-                if len(self._callbacks) > 0:
+                if self._callbacks:
                     for f in self._callbacks:
                         # 回调函数对 result 的修改会影响返回结果
                         try:
@@ -85,10 +85,10 @@ class Scanner:
             except asyncio.TimeoutError:
                 raise
             except Exception as why:
-                logging.exception(why)
+                logging.exception(f"Unexpected error running command: {why}")
             else:
                 if proc.returncode != 0:
-                    raise subprocess.CalledProcessError(returncode=proc.returncode)
+                    raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
                 else:
                     return NmapRun.from_xml(await xml_out.read())
 
@@ -96,23 +96,27 @@ class Scanner:
 
     def with_step(self, model: NmapRun) -> Self:
         # masscan 中同一个目标会有多个 host element
-        targets = set()
-        ports = set()
+        targets: Set[str] = set()
+        ports: Set[int] = set()
+
         for host in model.hosts:
-            for addr in host.address:
-                match addr:
-                    case Address(addr=ipv4, addrtype="ipv4"):
-                        targets.add(ipv4)
-                    case Address(addr=ipv6, addrtype="ipv6"):
-                        self.with_ipv6()
-                        targets.add(ipv6)
-                    case Address(addr=_, addrtype="mac"):
-                        logging.warn("MAC is not support")
-            for port in host.ports.ports:
-                ports.add(port.portid)
+            self._process_addresses(host.address, targets)
+            ports.update(port.portid for port in host.ports.ports)
+
         self.with_targets(*targets)
         self.with_ports(*ports)
         return self
+
+    def _process_addresses(self, addresses: list[Address], targets: Set[str]) -> None:
+        for addr in addresses:
+            match addr:
+                case Address(addr=ipv4, addrtype="ipv4"):
+                    targets.add(ipv4)
+                case Address(addr=ipv6, addrtype="ipv6"):
+                    self.with_ipv6()
+                    targets.add(ipv6)
+                case Address(addr=_, addrtype="mac"):
+                    logging.warning("MAC address is not supported")
 
     def with_callbacks(self, *callbacks: Callable[[NmapRun], Any]) -> Self:
         self._callbacks.extend(callbacks)
@@ -124,26 +128,14 @@ class Scanner:
         return self
 
     def with_ports(self, *ports: list[int | str]) -> Self:
-        # 注意 nmap 只有 -p 没有 --ports
-        if type(ports[0]) is int:
-            ports_str = ",".join([str(p) for p in ports])
-        else:
-            ports_str = ",".join(ports)
+        if not ports:
+            raise ValueError("At least one port must be provided.")
 
-        # 多次调用 with_ports 添加端口
-        place = -1
-        for i, arg in enumerate(self._args):
-            if arg == "-p":
-                place = i
-                break
-
-        if place > 0:
-            if i == len(self._args) - 1:
-                self._args.append("")
-            else:
-                ports_str = self._args[place + 1] + "," + ports_str
-            self._args[place + 1] = ports_str
-        else:
+        ports_str = ",".join(str(p) for p in ports)
+        try:
+            place = self._args.index("-p")
+            self._args[place + 1] += "," + ports_str
+        except ValueError:
             self._args.extend(("-p", ports_str))
 
         return self
