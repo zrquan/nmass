@@ -46,7 +46,10 @@ class Scanner:
                 if len(self._callbacks) > 0:
                     for f in self._callbacks:
                         # 回调函数对 result 的修改会影响返回结果
-                        f(result)
+                        try:
+                            f(result)
+                        except Exception as why:
+                            logging.error(f"Error running callback function: {why}")
                 return result
 
             return None
