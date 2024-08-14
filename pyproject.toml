@@ -11,11 +11,17 @@ python = ">=3.11"
 pydantic-xml = "^2.11.0"
 aiofiles = "^24.1.0"
 
+[tool.poetry.group.test.dependencies]
+pre-commit = "^3.8.0"
+
 [tool.poetry-dynamic-versioning]
 enable = true
 
 [tool.ruff]
 line-length = 100
+
+[tool.mypy]
+plugins = ["pydantic_xml.mypy"]
 
 [build-system]
 requires = ["poetry-core"]
