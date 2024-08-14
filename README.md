@@ -415,3 +415,8 @@ step2 = (
 )
 retult = step2.run()
 ```
+
+## Thanks
+
+- [Ullaakut/nmap](https://github.com/Ullaakut/nmap) - Provided design inspiration.
+- [savon-noir/python-libnmap](https://github.com/savon-noir/python-libnmap) - Provided test data.
