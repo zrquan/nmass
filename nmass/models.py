@@ -47,7 +47,7 @@ class PortUsed(BaseXmlModel, tag="portused"):
 
 class Ports(BaseXmlModel, tag="ports"):
     extraports: dict[str, str] | None = element(default=None)
-    ports: list[Port] = element()
+    ports: list[Port] | None = element(default=None)
 
 
 class Hostname(BaseXmlModel, tag="hostname"):
@@ -76,8 +76,8 @@ class OSMatch(BaseXmlModel, tag="osmatch"):
 
 
 class OS(BaseXmlModel, tag="os"):
-    used_ports: list[PortUsed]
-    osmatches: list[OSMatch]
+    used_ports: list[PortUsed] | None = element(default=None)
+    osmatches: list[OSMatch] | None = element(default=None)
 
 
 class Trace(BaseXmlModel, tag="trace"):
@@ -93,12 +93,12 @@ class Host(BaseXmlModel, tag="host"):
     class Status(BaseXmlModel, tag="status"):
         state: Literal["up", "down", "unknown", "skipped"] = attr()
         reason: str = attr()
-        reason_ttl: str = attr()
+        reason_ttl: str | None = attr(default=None)
 
     status: Status | None = element(default=None)  # None for masscan
     address: list[Address]
     hostnames: Hostnames | None = element(default=None)
-    ports: Ports
+    ports: Ports | None = element(default=None)
     os: OS | None = element(default=None)
     uptime: dict[str, str] | None = element(default=None)
     distance: dict[str, int] | None = element(default=None)
@@ -140,10 +140,11 @@ class NmapRun(BaseXmlModel, tag="nmaprun"):
     version: str = attr()
     xmloutputversion: str = attr()
 
-    scaninfo: ScanInfo
+    # https://seclists.org/nmap-dev/2005/q1/77
+    scaninfo: ScanInfo | None = element(default=None)
     verbose: dict[str, int] | None = element(default=None)  # None for masscan
     debugging: dict[str, int] | None = element(default=None)  # None for masscan
     hosthint: HostHint | None = element(default=None)
     taskprogress: list[TaskProgress] | None = element(default=None)
-    hosts: list[Host]
-    stats: Stats
+    hosts: list[Host] | None = element(default=None)
+    stats: Stats | None = element(default=None)

@@ -66,8 +66,12 @@ class Nmap(Scanner):
         targets: set[str] = set()
         ports: set[int] = set()
 
+        if model.hosts is None:
+            raise ValueError("hosts is None")
         for host in model.hosts:
             self._process_addresses(host.address, targets)
+            if host.ports is None or host.ports.ports is None:
+                raise ValueError("ports is None")
             ports.update(port.portid for port in host.ports.ports)
 
         self.with_targets(*targets)
