@@ -6,11 +6,11 @@ import time
 from abc import abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Self, Set
+from typing import Any, Self
 
 from aiofiles import tempfile as atempfile
 
-from nmass.models import Address, NmapRun
+from nmass.models import NmapRun
 from nmass.utils import validate_target
 
 
@@ -60,9 +60,10 @@ class Scanner:
 
     async def _arun_command(self, timeout: float | None, with_output: bool) -> NmapRun | None:
         async with atempfile.NamedTemporaryFile() as xml_out:
+            cmd_args = ["-ox", xml_out.name, *self._args]
             proc = await asyncio.create_subprocess_exec(
                 self.bin_path,
-                *["-oX", xml_out.name, *self._args],
+                *cmd_args,  # type: ignore
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.STDOUT,
             )
@@ -70,13 +71,14 @@ class Scanner:
             if with_output:
                 start_time = time.time()
                 killed = False
-                async for line in proc.stdout:
-                    print(line.decode().rstrip())
-                    if killed:
-                        continue
-                    if timeout and time.time() - start_time > timeout:
-                        proc.kill()
-                        killed = True
+                if proc.stdout:
+                    async for line in proc.stdout:
+                        print(line.decode().rstrip())
+                        if killed:
+                            continue
+                        if timeout and time.time() - start_time > timeout:
+                            proc.kill()
+                            killed = True
                 if killed:
                     raise asyncio.TimeoutError()
 
@@ -87,43 +89,23 @@ class Scanner:
             except Exception as why:
                 logging.exception(f"Unexpected error running command: {why}")
             else:
-                if proc.returncode != 0:
-                    raise subprocess.CalledProcessError(returncode=proc.returncode, cmd=proc.args)
+                if proc.returncode and proc.returncode != 0:
+                    raise subprocess.CalledProcessError(
+                        returncode=proc.returncode,
+                        cmd=f"{self.bin_path} {' '.join(cmd_args)}",  # type: ignore
+                    )
                 else:
                     return NmapRun.from_xml(await xml_out.read())
 
             return None
-
-    def with_step(self, model: NmapRun) -> Self:
-        # masscan 中同一个目标会有多个 host element
-        targets: Set[str] = set()
-        ports: Set[int] = set()
-
-        for host in model.hosts:
-            self._process_addresses(host.address, targets)
-            ports.update(port.portid for port in host.ports.ports)
-
-        self.with_targets(*targets)
-        self.with_ports(*ports)
-        return self
-
-    def _process_addresses(self, addresses: list[Address], targets: Set[str]) -> None:
-        for addr in addresses:
-            match addr:
-                case Address(addr=ipv4, addrtype="ipv4"):
-                    targets.add(ipv4)
-                case Address(addr=ipv6, addrtype="ipv6"):
-                    self.with_ipv6()
-                    targets.add(ipv6)
-                case Address(addr=_, addrtype="mac"):
-                    logging.warning("MAC address is not supported")
 
     def with_callbacks(self, *callbacks: Callable[[NmapRun], Any]) -> Self:
         self._callbacks.extend(callbacks)
         return self
 
     def with_targets(self, *targets: str) -> Self:
-        [validate_target(t) for t in targets]
+        for t in targets:
+            validate_target(t)
         self._args.extend(targets)
         return self
 
@@ -153,4 +135,4 @@ class Scanner:
         return self
 
     def without_closed_ports(self) -> Self:
-        pass
+        raise NotImplementedError()

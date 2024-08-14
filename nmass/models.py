@@ -7,18 +7,18 @@ class ScanInfo(BaseXmlModel, tag="scaninfo"):
     # TODO: (syn|ack|bounce|connect|null|xmas|window|maimon|fin|udp|sctpinit|sctpcookieecho|ipproto)
     type: str = attr()
     protocol: Literal["ip", "tcp", "udp", "sctp"] = attr()
-    numservices: int = attr(default=None)
-    services: str = attr(default=None)
+    numservices: int | None = attr(default=None)
+    services: str | None = attr(default=None)
 
 
 class Service(BaseXmlModel, tag="service"):
     name: str = attr()
-    banner: str = attr(default=None)  # for masscan
-    product: str = attr(default=None)
-    version: str = attr(default=None)
-    method: Literal["table", "probed"] = attr(default=None)
-    confidence: int = attr(name="conf", default=None)
-    cpe: str = element(default=None)
+    banner: str | None = attr(default=None)  # for masscan
+    product: str | None = attr(default=None)
+    version: str | None = attr(default=None)
+    method: Literal["table", "probed"] | None = attr(default=None)
+    confidence: int | None = attr(name="conf", default=None)
+    cpe: str | None = element(default=None)
 
 
 class Script(BaseXmlModel, tag="script"):
@@ -35,8 +35,8 @@ class Port(BaseXmlModel, tag="port"):
     protocol: Literal["ip", "tcp", "udp", "sctp"] = attr()
     portid: int = attr()
     state: State
-    service: Service = element(default=None)
-    scripts: list[Script] = element(default=None)
+    service: Service | None = element(default=None)
+    scripts: list[Script] | None = element(default=None)
 
 
 class PortUsed(BaseXmlModel, tag="portused"):
@@ -46,7 +46,7 @@ class PortUsed(BaseXmlModel, tag="portused"):
 
 
 class Ports(BaseXmlModel, tag="ports"):
-    extraports: dict[str, str] = element(default=None)
+    extraports: dict[str, str] | None = element(default=None)
     ports: list[Port] = element()
 
 
@@ -56,7 +56,7 @@ class Hostname(BaseXmlModel, tag="hostname"):
 
 
 class Hostnames(BaseXmlModel, tag="hostnames"):
-    hostnames: list[Hostname] = element(default=None)
+    hostnames: list[Hostname] | None = element(default=None)
 
 
 class OSClass(BaseXmlModel, tag="osclass"):
@@ -65,7 +65,7 @@ class OSClass(BaseXmlModel, tag="osclass"):
     osfamily: str = attr()
     osgen: str = attr()
     accuracy: int = attr()
-    cpe: str = element(default=None)
+    cpe: str | None = element(default=None)
 
 
 class OSMatch(BaseXmlModel, tag="osmatch"):
@@ -95,32 +95,32 @@ class Host(BaseXmlModel, tag="host"):
         reason: str = attr()
         reason_ttl: str = attr()
 
-    status: Status = element(default=None)  # None for masscan
+    status: Status | None = element(default=None)  # None for masscan
     address: list[Address]
-    hostnames: Hostnames = element(default=None)
+    hostnames: Hostnames | None = element(default=None)
     ports: Ports
-    os: OS = element(default=None)
-    uptime: dict[str, str] = element(default=None)
-    distance: dict[str, int] = element(default=None)
-    tcpsequence: dict[str, str] = element(default=None)
-    ipidsequence: dict[str, str] = element(default=None)
-    tcptssequence: dict[str, str] = element(default=None)
-    trace: Trace = element(default=None)
-    times: dict[str, int] = element(default=None)
+    os: OS | None = element(default=None)
+    uptime: dict[str, str] | None = element(default=None)
+    distance: dict[str, int] | None = element(default=None)
+    tcpsequence: dict[str, str] | None = element(default=None)
+    ipidsequence: dict[str, str] | None = element(default=None)
+    tcptssequence: dict[str, str] | None = element(default=None)
+    trace: Trace | None = element(default=None)
+    times: dict[str, int] | None = element(default=None)
 
 
 class HostHint(BaseXmlModel, tag="hosthint"):
     status: Host.Status = element()
     address: list[Address]
-    hostnames: Hostnames = element(default=None)
+    hostnames: Hostnames | None = element(default=None)
 
 
 class TaskProgress(BaseXmlModel, tag="taskprogress"):
     task: str = attr()
     time: str = attr()
     percent: float = attr()
-    remaining: int = attr(default=None)
-    etc: str = attr(default=None)
+    remaining: int | None = attr(default=None)
+    etc: str | None = attr(default=None)
 
 
 class NmapRun(BaseXmlModel, tag="nmaprun"):
@@ -134,16 +134,16 @@ class NmapRun(BaseXmlModel, tag="nmaprun"):
         hosts: dict[str, int] = element()
 
     scanner: Literal["nmap", "masscan"] = attr()
-    args: str = attr(default=None)
-    start: int = attr(default=None)
-    start_time: str = attr(name="startstr", default=None)
+    args: str | None = attr(default=None)
+    start: int | None = attr(default=None)
+    start_time: str | None = attr(name="startstr", default=None)
     version: str = attr()
     xmloutputversion: str = attr()
 
     scaninfo: ScanInfo
-    verbose: dict[str, int] = element(default=None)  # None for masscan
-    debugging: dict[str, int] = element(default=None)  # None for masscan
-    hosthint: HostHint = element(default=None)
-    taskprogress: list[TaskProgress] = element(default=None)
+    verbose: dict[str, int] | None = element(default=None)  # None for masscan
+    debugging: dict[str, int] | None = element(default=None)  # None for masscan
+    hosthint: HostHint | None = element(default=None)
+    taskprogress: list[TaskProgress] | None = element(default=None)
     hosts: list[Host]
     stats: Stats

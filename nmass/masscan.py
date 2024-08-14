@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Literal, Self
 
 from nmass.errors import MasscanExecutionError, MasscanNotInstalledError
-from nmass.models import NmapRun
+from nmass.models import Address, NmapRun
 from nmass.scanner import Scanner
 from nmass.utils import as_root
 
@@ -61,6 +61,29 @@ class Masscan(Scanner):
         except asyncio.TimeoutError:
             logging.warn("asynchronous masscan scanning timeout")
             raise
+
+    def with_step(self, model: NmapRun) -> Self:
+        # masscan 中同一个目标会有多个 host element
+        targets: set[str] = set()
+        ports: set[int] = set()
+
+        for host in model.hosts:
+            self._process_addresses(host.address, targets)
+            ports.update(port.portid for port in host.ports.ports)
+
+        self.with_targets(*targets)
+        self.with_ports(*ports)
+        return self
+
+    def _process_addresses(self, addresses: list[Address], targets: set[str]) -> None:
+        for addr in addresses:
+            match addr:
+                case Address(addr=ipv4, addrtype="ipv4"):
+                    targets.add(ipv4)
+                case Address(addr=_, addrtype="ipv6"):
+                    logging.warning("MAC address is not supported")
+                case Address(addr=_, addrtype="mac"):
+                    logging.warning("MAC address is not supported")
 
     def with_rate(self, rate: int) -> Self:
         """Set the packet transmission rate (--rate).

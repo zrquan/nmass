@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Literal, Self
 
 from nmass.errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
-from nmass.models import NmapRun
+from nmass.models import Address, NmapRun
 from nmass.scanner import Scanner
 from nmass.utils import as_root
 
@@ -60,6 +60,30 @@ class Nmap(Scanner):
         except asyncio.TimeoutError:
             logging.warn("asynchronous nmap scanning timeout")
             raise
+
+    def with_step(self, model: NmapRun) -> Self:
+        # masscan 中同一个目标会有多个 host element
+        targets: set[str] = set()
+        ports: set[int] = set()
+
+        for host in model.hosts:
+            self._process_addresses(host.address, targets)
+            ports.update(port.portid for port in host.ports.ports)
+
+        self.with_targets(*targets)
+        self.with_ports(*ports)
+        return self
+
+    def _process_addresses(self, addresses: list[Address], targets: set[str]) -> None:
+        for addr in addresses:
+            match addr:
+                case Address(addr=ipv4, addrtype="ipv4"):
+                    targets.add(ipv4)
+                case Address(addr=ipv6, addrtype="ipv6"):
+                    self.with_ipv6()
+                    targets.add(ipv6)
+                case Address(addr=_, addrtype="mac"):
+                    logging.warning("MAC address is not supported")
 
     ### TARGET SPECIFICATION ###
 
