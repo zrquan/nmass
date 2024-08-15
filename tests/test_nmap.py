@@ -1,6 +1,7 @@
 import pytest
 
 from nmass import Nmap
+from nmass.model.enums import TCPFlag, TimingTemplate
 
 
 @pytest.fixture
@@ -172,7 +173,7 @@ def test_with_tcp_xmas_scan(nmap_instance):
 
 
 def test_with_tcp_scan_flags(nmap_instance):
-    flags = [Nmap.TCPFlag.FlagFIN, Nmap.TCPFlag.FlagURG]
+    flags = [TCPFlag.FIN, TCPFlag.URG]
     nmap_instance.with_tcp_scan_flags(*flags)
     expected_arg = "--scanflags 33"  # FlagFIN (1) + FlagURG (32)
     assert expected_arg in " ".join(
@@ -360,7 +361,7 @@ def test_with_osscan_guess(nmap_instance):
 
 
 def test_with_timing_template(nmap_instance):
-    template = Nmap.TimingTemplate.Aggressive
+    template = TimingTemplate.Aggressive
     nmap_instance.with_timing_template(template)
     expected_arg = f"-T{int(template)}"
     assert expected_arg in " ".join(

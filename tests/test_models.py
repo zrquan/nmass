@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from nmass.models import CPE, NmapRun
+from nmass.model.elements import CPE, NmapRun
 
 
 @pytest.fixture

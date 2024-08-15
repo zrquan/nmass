@@ -10,7 +10,7 @@ from typing import Any, Self
 
 from aiofiles import tempfile as atempfile
 
-from nmass.models import NmapRun
+from nmass.model.elements import NmapRun
 from nmass.utils import validate_target
 
 

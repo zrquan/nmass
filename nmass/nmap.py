@@ -1,5 +1,4 @@
 import asyncio
-import enum
 import logging
 import shutil
 import subprocess
@@ -8,7 +7,8 @@ from pathlib import Path
 from typing import Literal, Self
 
 from nmass.errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
-from nmass.models import Address, NmapRun
+from nmass.model.elements import Address, NmapRun
+from nmass.model.enums import TCPFlag, TimingTemplate
 from nmass.scanner import Scanner
 from nmass.utils import as_root
 
@@ -259,20 +259,6 @@ class Nmap(Scanner):
         self._args.append("-sX")
         return self
 
-    class TCPFlag(enum.IntEnum):
-        """Enum representing TCP Flags for custom scan."""
-
-        FlagNULL = 0
-        FlagFIN = 1
-        FlagSYN = 2
-        FlagRST = 4
-        FlagPSH = 8
-        FlagACK = 16
-        FlagURG = 32
-        FlagECE = 64
-        FlagCWR = 128
-        FlagNS = 256
-
     # TODO: https://nmap.org/book/scan-methods-custom-scanflags.html
     def with_tcp_scan_flags(self, *flags: TCPFlag) -> Self:
         """Custom TCP Scan Flags (--scanflags).
@@ -485,19 +471,6 @@ class Nmap(Scanner):
         return self
 
     ### TIMING AND PERFORMANCE ###
-
-    class TimingTemplate(enum.IntEnum):
-        """Timing templates for controlling scan speed and performance.
-
-        https://nmap.org/book/performance-timing-templates.html
-        """
-
-        Paranoid = 0
-        Sneaky = 1
-        Polite = 2
-        Normal = 3
-        Aggressive = 4
-        Insane = 5
 
     def with_timing_template(self, template: TimingTemplate) -> Self:
         """Set timing template (-T).

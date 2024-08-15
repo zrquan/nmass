@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Literal, Self
 
 from nmass.errors import MasscanExecutionError, MasscanNotInstalledError
-from nmass.models import Address, NmapRun
+from nmass.model.elements import Address, NmapRun
 from nmass.scanner import Scanner
 from nmass.utils import as_root
 

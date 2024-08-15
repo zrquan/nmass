@@ -2,6 +2,8 @@ from typing import Literal
 
 from pydantic_xml import BaseXmlModel, RootXmlModel, attr, element
 
+from nmass.model.enums import HostState, PortProtocol, PortState, ScanType
+
 
 class CPE(RootXmlModel[str]):
     @property
@@ -46,9 +48,8 @@ class CPE(RootXmlModel[str]):
 
 
 class ScanInfo(BaseXmlModel, tag="scaninfo"):
-    # TODO: (syn|ack|bounce|connect|null|xmas|window|maimon|fin|udp|sctpinit|sctpcookieecho|ipproto)
-    type: str = attr()
-    protocol: Literal["ip", "tcp", "udp", "sctp"] = attr()
+    type: ScanType = attr()
+    protocol: PortProtocol = attr()
     numservices: int | None = attr(default=None)
     services: str | None = attr(default=None)
 
@@ -70,11 +71,11 @@ class Script(BaseXmlModel, tag="script"):
 
 class Port(BaseXmlModel, tag="port"):
     class State(BaseXmlModel, tag="state"):
-        state: Literal["open", "closed", "filtered"] = attr()
+        state: PortState = attr()
         reason: str = attr()
         reason_ttl: str = attr()
 
-    protocol: Literal["ip", "tcp", "udp", "sctp"] = attr()
+    protocol: PortProtocol = attr()
     portid: int = attr()
     state: State
     service: Service | None = element(default=None)
@@ -82,8 +83,8 @@ class Port(BaseXmlModel, tag="port"):
 
 
 class PortUsed(BaseXmlModel, tag="portused"):
-    state: Literal["open", "closed", "filtered"] = attr()
-    proto: Literal["ip", "tcp", "udp", "sctp"] = attr()
+    state: PortState = attr()
+    proto: PortProtocol = attr()
     portid: int = attr()
 
 
@@ -133,7 +134,7 @@ class Address(BaseXmlModel, tag="address"):
 
 class Host(BaseXmlModel, tag="host"):
     class Status(BaseXmlModel, tag="status"):
-        state: Literal["up", "down", "unknown", "skipped"] = attr()
+        state: HostState = attr()
         reason: str = attr()
         reason_ttl: str | None = attr(default=None)
 
