@@ -1,6 +1,48 @@
 from typing import Literal
 
-from pydantic_xml import BaseXmlModel, attr, element
+from pydantic_xml import BaseXmlModel, RootXmlModel, attr, element
+
+
+class CPE(RootXmlModel[str]):
+    @property
+    def part(self) -> str:
+        return self.root.split(":")[1]
+
+    @property
+    def vendor(self) -> str:
+        return self.root.split(":")[2]
+
+    @property
+    def product(self) -> str:
+        return self.root.split(":")[3]
+
+    @property
+    def version(self) -> str:
+        try:
+            return self.root.split(":")[4]
+        except IndexError:
+            return ""
+
+    @property
+    def update(self) -> str:
+        try:
+            return self.root.split(":")[5]
+        except IndexError:
+            return ""
+
+    @property
+    def edition(self) -> str:
+        try:
+            return self.root.split(":")[6]
+        except IndexError:
+            return ""
+
+    @property
+    def language(self) -> str:
+        try:
+            return self.root.split(":")[7]
+        except IndexError:
+            return ""
 
 
 class ScanInfo(BaseXmlModel, tag="scaninfo"):
@@ -18,7 +60,7 @@ class Service(BaseXmlModel, tag="service"):
     version: str | None = attr(default=None)
     method: Literal["table", "probed"] | None = attr(default=None)
     confidence: int | None = attr(name="conf", default=None)
-    cpe: str | None = element(default=None)
+    cpe: CPE | None = element(default=None)
 
 
 class Script(BaseXmlModel, tag="script"):
@@ -65,7 +107,7 @@ class OSClass(BaseXmlModel, tag="osclass"):
     osfamily: str = attr()
     osgen: str = attr()
     accuracy: int = attr()
-    cpe: str | None = element(default=None)
+    cpe: CPE | None = element(default=None)
 
 
 class OSMatch(BaseXmlModel, tag="osmatch"):
