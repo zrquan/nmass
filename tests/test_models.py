@@ -17,5 +17,5 @@ def test_parse_xml_without_errors(xml_files):
                 nr = NmapRun.from_xml(file.read())
                 assert nr.scanner in ("nmap", "masscan")
                 print(f"✔ {filename}")
-        except Exception:
-            pytest.fail(f"Parsing {filename} failed 😢")
+        except Exception as err:
+            pytest.fail(f"✘ {filename} => {err}")
