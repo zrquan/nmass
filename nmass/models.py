@@ -123,7 +123,7 @@ class TaskProgress(BaseXmlModel, tag="taskprogress"):
     etc: str | None = attr(default=None)
 
 
-class NmapRun(BaseXmlModel, tag="nmaprun"):
+class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
     """
     This is the data model that maps with the Nmap (also Masscan) XML output.
     Refer to https://nmap.org/book/nmap-dtd.html for details.
