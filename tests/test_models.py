@@ -41,6 +41,7 @@ def test_parse_xml_without_errors(xml_files):
                 nr = NmapRun.from_xml(file.read())
                 assert nr.scanner in ("nmap", "masscan")
                 print(f"✔ {path}")
+                # print(f"\t{nr.model_dump_json(exclude_none=True)}")
         except Exception as err:
             pytest.fail(f"✘ {path} => {err}")
 
@@ -74,3 +75,15 @@ def test_cpe_model(cpes):
         and model.edition == "osx"
         and model.language == "es-es"
     )
+
+
+def test_hostnames(xml_files):
+    for path in xml_files.values():
+        try:
+            with open(path) as file:
+                nr = NmapRun.from_xml(file.read())
+                for host in nr.hosts:
+                    for hostname in host.hostnames:
+                        assert hostname.type in ("user", "PTR")
+        except Exception as err:
+            pytest.fail(f"✘ {path} => {err}")

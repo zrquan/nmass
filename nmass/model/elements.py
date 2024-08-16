@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic_xml import BaseXmlModel, RootXmlModel, attr, element
+from pydantic_xml import BaseXmlModel, RootXmlModel, attr, element, wrapped
 
 from nmass.model.enums import HostState, PortProtocol, PortState, ScanType
 
@@ -88,8 +88,18 @@ class PortUsed(BaseXmlModel, tag="portused"):
     portid: int = attr()
 
 
+class ExtraPorts(BaseXmlModel, tag="extraports"):
+    class ExtraReasons(BaseXmlModel, tag="extrareasons"):
+        reason: str = attr()
+        count: int = attr()
+
+    state: PortState = attr()
+    count: int = attr()
+    reasons: ExtraReasons = element()
+
+
 class Ports(BaseXmlModel, tag="ports"):
-    extraports: dict[str, str] | None = element(default=None)
+    extraports: ExtraPorts | None = element(default=None)
     ports: list[Port] | None = element(default=None)
 
 
@@ -98,15 +108,11 @@ class Hostname(BaseXmlModel, tag="hostname"):
     type: Literal["user", "PTR"] = attr()
 
 
-class Hostnames(BaseXmlModel, tag="hostnames"):
-    hostnames: list[Hostname] | None = element(default=None)
-
-
 class OSClass(BaseXmlModel, tag="osclass"):
-    type: str = attr()
+    type: str = attr(default="")
     vendor: str = attr()
     osfamily: str = attr()
-    osgen: str = attr()
+    osgen: str = attr(default="")
     accuracy: int = attr()
     cpe: CPE | None = element(default=None)
 
@@ -140,7 +146,7 @@ class Host(BaseXmlModel, tag="host"):
 
     status: Status | None = element(default=None)  # None for masscan
     address: list[Address]
-    hostnames: Hostnames | None = element(default=None)
+    hostnames: list[Hostname] = wrapped("hostnames", element(tag="hostname", default=[]))  # type: ignore
     ports: Ports | None = element(default=None)
     os: OS | None = element(default=None)
     uptime: dict[str, str] | None = element(default=None)
@@ -155,7 +161,7 @@ class Host(BaseXmlModel, tag="host"):
 class HostHint(BaseXmlModel, tag="hosthint"):
     status: Host.Status = element()
     address: list[Address]
-    hostnames: Hostnames | None = element(default=None)
+    hostnames: list[Hostname] = wrapped("hostnames", element(tag="hostname", default=[]))  # type: ignore
 
 
 class TaskProgress(BaseXmlModel, tag="taskprogress"):
@@ -189,5 +195,5 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
     debugging: dict[str, int] | None = element(default=None)  # None for masscan
     hosthint: HostHint | None = element(default=None)
     taskprogress: list[TaskProgress] | None = element(default=None)
-    hosts: list[Host] | None = element(default=None)
+    hosts: list[Host] = element(default=[])
     stats: Stats | None = element(default=None)
