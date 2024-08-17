@@ -103,6 +103,12 @@ class Scanner:
         self._callbacks.extend(callbacks)
         return self
 
+    def with_custom_args(self, args: str) -> Self:
+        for a in args.split(" "):
+            if a != "":
+                self._args.append(a.strip())
+        return self
+
     def with_targets(self, *targets: str) -> Self:
         for t in targets:
             validate_target(t)
