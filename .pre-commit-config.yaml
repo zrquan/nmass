@@ -22,4 +22,5 @@ repos:
       - id: mypy
         additional_dependencies:
           - pydantic-xml
+          - types-aiofiles
         args: [--ignore-missing-imports]

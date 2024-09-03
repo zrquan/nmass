@@ -7,7 +7,7 @@ from nmass.model.elements import CPE, NmapRun
 
 @pytest.fixture
 def xml_files() -> dict[str, Path]:
-    return {p.name: p for p in Path("tests/data").glob("**/*.xml")}
+    return {p.name: p for p in Path("tests/unit/data").glob("**/*.xml")}
 
 
 @pytest.fixture
