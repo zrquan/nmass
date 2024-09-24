@@ -3,7 +3,9 @@ import logging
 import shutil
 import subprocess
 from dataclasses import dataclass
-from typing import Literal, Self
+from typing import Literal
+
+from typing_extensions import Self
 
 from nmass.errors import MasscanExecutionError, MasscanNotInstalledError
 from nmass.model.elements import Address, NmapRun

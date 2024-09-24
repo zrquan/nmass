@@ -4,7 +4,9 @@ import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, Self
+from typing import Literal
+
+from typing_extensions import Self
 
 from nmass.errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
 from nmass.model.elements import Address, NmapRun

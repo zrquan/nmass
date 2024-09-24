@@ -6,9 +6,10 @@ import time
 from abc import abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Self
+from typing import Any
 
 from aiofiles import tempfile as atempfile
+from typing_extensions import Self
 
 from nmass.model.elements import NmapRun
 from nmass.utils import validate_target

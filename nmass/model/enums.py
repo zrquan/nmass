@@ -1,7 +1,7 @@
-from enum import IntEnum, StrEnum
+from enum import Enum
 
 
-class ScanType(StrEnum):
+class ScanType(str, Enum):
     syn = "syn"
     ack = "ack"
     bounce = "bounce"
@@ -17,28 +17,28 @@ class ScanType(StrEnum):
     ipproto = "ipproto"
 
 
-class PortState(StrEnum):
+class PortState(str, Enum):
     open = "open"
     closed = "closed"
     filtered = "filtered"
     open_or_filtered = "open|filtered"
 
 
-class PortProtocol(StrEnum):
+class PortProtocol(str, Enum):
     ip = "ip"
     tcp = "tcp"
     udp = "udp"
     sctp = "sctp"
 
 
-class HostState(StrEnum):
+class HostState(str, Enum):
     up = "up"
     down = "down"
     unknown = "unknown"
     skipped = "skipped"
 
 
-class TCPFlag(IntEnum):
+class TCPFlag(int, Enum):
     """Enum representing TCP Flags for custom scan."""
 
     NULL = 0
@@ -53,7 +53,7 @@ class TCPFlag(IntEnum):
     NS = 256
 
 
-class TimingTemplate(IntEnum):
+class TimingTemplate(int, Enum):
     """Timing templates for controlling scan speed and performance.
 
     https://nmap.org/book/performance-timing-templates.html
