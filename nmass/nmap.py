@@ -3,7 +3,7 @@ import logging
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Optional
 
 from typing_extensions import Self
 
@@ -26,9 +26,9 @@ class Nmap(Scanner):
 
     def run(
         self,
-        timeout: float | None = None,
+        timeout: Optional[float] = None,
         with_output: bool = False,
-    ) -> NmapRun | None:
+    ) -> Optional[NmapRun]:
         """Run nmap command.
 
         :param timeout: Timeout for nmap process, defaults to None
@@ -45,9 +45,9 @@ class Nmap(Scanner):
 
     async def arun(
         self,
-        timeout: float | None = None,
+        timeout: Optional[float] = None,
         with_output: bool = False,
-    ) -> NmapRun | None:
+    ) -> Optional[NmapRun]:
         """Run nmap command asynchronously.
 
         :param timeout: Timeout for nmap process, defaults to None
@@ -81,14 +81,11 @@ class Nmap(Scanner):
 
     def _process_addresses(self, addresses: list[Address], targets: set[str]) -> None:
         for addr in addresses:
-            match addr:
-                case Address(addr=ipv4, addrtype="ipv4"):
-                    targets.add(ipv4)
-                case Address(addr=ipv6, addrtype="ipv6"):
-                    self.with_ipv6()
-                    targets.add(ipv6)
-                case Address(addr=_, addrtype="mac"):
-                    logging.warning("MAC address is not supported")
+            if addr.addrtype == "ipv4":
+                targets.add(addr.addr)
+            elif addr.addrtype == "ipv6":
+                self.with_ipv6()
+                targets.add(addr.addr)
 
     ### TARGET SPECIFICATION ###
 
@@ -483,8 +480,8 @@ class Nmap(Scanner):
 
     def with_hostgroup_size(
         self,
-        min: int | None = None,
-        max: int | None = None,
+        min: Optional[int] = None,
+        max: Optional[int] = None,
     ) -> Self:
         """Parallel host scan group sizes (--min-hostgroup, --max-hostgroup).
 
@@ -502,8 +499,8 @@ class Nmap(Scanner):
 
     def with_parallelism(
         self,
-        min: int | None = None,
-        max: int | None = None,
+        min: Optional[int] = None,
+        max: Optional[int] = None,
     ) -> Self:
         """Probe parallelization (--min-parallelism, --max-parallelism).
 
@@ -524,9 +521,9 @@ class Nmap(Scanner):
 
     def with_rtt_timeout(
         self,
-        min: int | None = None,
-        max: int | None = None,
-        initial: int | None = None,
+        min: Optional[int] = None,
+        max: Optional[int] = None,
+        initial: Optional[int] = None,
     ) -> Self:
         """Specifies probe round trip time (--min-rtt-timeout, --max-rtt-timeout, --initial-rtt-timeout).
 
@@ -563,8 +560,8 @@ class Nmap(Scanner):
 
     def with_scan_delay(
         self,
-        time: int | None = None,
-        max_time: int | None = None,
+        time: Optional[int] = None,
+        max_time: Optional[int] = None,
     ) -> Self:
         """Adjust delay between probes (--scan-delay, --max-scan-delay).
 
@@ -582,8 +579,8 @@ class Nmap(Scanner):
 
     def with_rate(
         self,
-        min: int | None = None,
-        max: int | None = None,
+        min: Optional[int] = None,
+        max: Optional[int] = None,
     ) -> Self:
         """Send packets no slower/faster than min/max per second (--min-rate, --max-rate).
 

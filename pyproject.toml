@@ -7,7 +7,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10"
+python = ">=3.9"
 pydantic-xml = "^2.11.0"
 aiofiles = "^24.1.0"
 
@@ -19,7 +19,7 @@ pytest = "^8.3.2"
 enable = true
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 
 [tool.mypy]
 plugins = ["pydantic_xml.mypy"]

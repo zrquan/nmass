@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic_xml import BaseXmlModel, RootXmlModel, attr, element, wrapped
 
@@ -50,18 +50,18 @@ class CPE(RootXmlModel[str]):
 class ScanInfo(BaseXmlModel, tag="scaninfo"):
     type: ScanType = attr()
     protocol: PortProtocol = attr()
-    numservices: int | None = attr(default=None)
-    services: str | None = attr(default=None)
+    numservices: Optional[int] = attr(default=None)
+    services: Optional[str] = attr(default=None)
 
 
 class Service(BaseXmlModel, tag="service"):
     name: str = attr()
-    banner: str | None = attr(default=None)  # for masscan
-    product: str | None = attr(default=None)
-    version: str | None = attr(default=None)
-    method: Literal["table", "probed"] | None = attr(default=None)
-    confidence: int | None = attr(name="conf", default=None)
-    cpe: CPE | None = element(default=None)
+    banner: Optional[str] = attr(default=None)  # for masscan
+    product: Optional[str] = attr(default=None)
+    version: Optional[str] = attr(default=None)
+    method: Optional[Literal["table", "probed"]] = attr(default=None)
+    confidence: Optional[int] = attr(name="conf", default=None)
+    cpe: Optional[CPE] = element(default=None)
 
 
 class Script(BaseXmlModel, tag="script"):
@@ -78,8 +78,8 @@ class Port(BaseXmlModel, tag="port"):
     protocol: PortProtocol = attr()
     portid: int = attr()
     state: State
-    service: Service | None = element(default=None)
-    scripts: list[Script] | None = element(default=None)
+    service: Optional[Service] = element(default=None)
+    scripts: Optional[list[Script]] = element(default=None)
 
 
 class PortUsed(BaseXmlModel, tag="portused"):
@@ -99,8 +99,8 @@ class ExtraPorts(BaseXmlModel, tag="extraports"):
 
 
 class Ports(BaseXmlModel, tag="ports"):
-    extraports: ExtraPorts | None = element(default=None)
-    ports: list[Port] | None = element(default=None)
+    extraports: Optional[ExtraPorts] = element(default=None)
+    ports: Optional[list[Port]] = element(default=None)
 
 
 class Hostname(BaseXmlModel, tag="hostname"):
@@ -114,7 +114,7 @@ class OSClass(BaseXmlModel, tag="osclass"):
     osfamily: str = attr()
     osgen: str = attr(default="")
     accuracy: int = attr()
-    cpe: CPE | None = element(default=None)
+    cpe: Optional[CPE] = element(default=None)
 
 
 class OSMatch(BaseXmlModel, tag="osmatch"):
@@ -125,8 +125,8 @@ class OSMatch(BaseXmlModel, tag="osmatch"):
 
 
 class OS(BaseXmlModel, tag="os"):
-    used_ports: list[PortUsed] | None = element(default=None)
-    osmatches: list[OSMatch] | None = element(default=None)
+    used_ports: Optional[list[PortUsed]] = element(default=None)
+    osmatches: Optional[list[OSMatch]] = element(default=None)
 
 
 class Trace(BaseXmlModel, tag="trace"):
@@ -142,20 +142,20 @@ class Host(BaseXmlModel, tag="host"):
     class Status(BaseXmlModel, tag="status"):
         state: HostState = attr()
         reason: str = attr()
-        reason_ttl: str | None = attr(default=None)
+        reason_ttl: Optional[str] = attr(default=None)
 
-    status: Status | None = element(default=None)  # None for masscan
+    status: Optional[Status] = element(default=None)  # None for masscan
     address: list[Address]
     hostnames: list[Hostname] = wrapped("hostnames", element(tag="hostname", default=[]))  # type: ignore
-    ports: Ports | None = element(default=None)
-    os: OS | None = element(default=None)
-    uptime: dict[str, str] | None = element(default=None)
-    distance: dict[str, int] | None = element(default=None)
-    tcpsequence: dict[str, str] | None = element(default=None)
-    ipidsequence: dict[str, str] | None = element(default=None)
-    tcptssequence: dict[str, str] | None = element(default=None)
-    trace: Trace | None = element(default=None)
-    times: dict[str, int] | None = element(default=None)
+    ports: Optional[Ports] = element(default=None)
+    os: Optional[OS] = element(default=None)
+    uptime: Optional[dict[str, str]] = element(default=None)
+    distance: Optional[dict[str, int]] = element(default=None)
+    tcpsequence: Optional[dict[str, str]] = element(default=None)
+    ipidsequence: Optional[dict[str, str]] = element(default=None)
+    tcptssequence: Optional[dict[str, str]] = element(default=None)
+    trace: Optional[Trace] = element(default=None)
+    times: Optional[dict[str, int]] = element(default=None)
 
 
 class HostHint(BaseXmlModel, tag="hosthint"):
@@ -168,8 +168,8 @@ class TaskProgress(BaseXmlModel, tag="taskprogress"):
     task: str = attr()
     time: str = attr()
     percent: float = attr()
-    remaining: int | None = attr(default=None)
-    etc: str | None = attr(default=None)
+    remaining: Optional[int] = attr(default=None)
+    etc: Optional[str] = attr(default=None)
 
 
 class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
@@ -183,17 +183,17 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
         hosts: dict[str, int] = element()
 
     scanner: Literal["nmap", "masscan"] = attr()
-    args: str | None = attr(default=None)
-    start: int | None = attr(default=None)
-    start_time: str | None = attr(name="startstr", default=None)
+    args: Optional[str] = attr(default=None)
+    start: Optional[int] = attr(default=None)
+    start_time: Optional[str] = attr(name="startstr", default=None)
     version: str = attr()
     xmloutputversion: str = attr()
 
     # https://seclists.org/nmap-dev/2005/q1/77
-    scaninfo: ScanInfo | None = element(default=None)
-    verbose: dict[str, int] | None = element(default=None)  # None for masscan
-    debugging: dict[str, int] | None = element(default=None)  # None for masscan
-    hosthint: HostHint | None = element(default=None)
-    taskprogress: list[TaskProgress] | None = element(default=None)
+    scaninfo: Optional[ScanInfo] = element(default=None)
+    verbose: Optional[dict[str, int]] = element(default=None)  # None for masscan
+    debugging: Optional[dict[str, int]] = element(default=None)  # None for masscan
+    hosthint: Optional[HostHint] = element(default=None)
+    taskprogress: Optional[list[TaskProgress]] = element(default=None)
     hosts: list[Host] = element(default=[])
-    stats: Stats | None = element(default=None)
+    stats: Optional[Stats] = element(default=None)

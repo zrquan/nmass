@@ -5,7 +5,7 @@ import tempfile
 import time
 from abc import abstractmethod
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Optional, Union
 
 from aiofiles import tempfile as atempfile
 from typing_extensions import Self
@@ -24,10 +24,10 @@ class Scanner:
         return f"<{self.__class__.__name__} [{self.bin_path} {' '.join(self._args)}]>"
 
     @abstractmethod
-    def run(self, timeout: float | None, with_output: bool) -> NmapRun | None:
+    def run(self, timeout: Optional[float], with_output: bool) -> Optional[NmapRun]:
         raise NotImplementedError()
 
-    def _run_command(self, timeout: float | None, with_output: bool) -> NmapRun | None:
+    def _run_command(self, timeout: Optional[float], with_output: bool) -> Optional[NmapRun]:
         with tempfile.NamedTemporaryFile() as xml_out:
             cmd = [self.bin_path, "-oX", xml_out.name, *self._args]
             try:
@@ -58,10 +58,10 @@ class Scanner:
             return None
 
     @abstractmethod
-    async def arun(self, timeout: float | None, with_output: bool) -> NmapRun | None:
+    async def arun(self, timeout: Optional[float], with_output: bool) -> Optional[NmapRun]:
         raise NotImplementedError()
 
-    async def _arun_command(self, timeout: float | None, with_output: bool) -> NmapRun | None:
+    async def _arun_command(self, timeout: Optional[float], with_output: bool) -> Optional[NmapRun]:
         async with atempfile.NamedTemporaryFile() as xml_out:
             cmd_args = ["-ox", xml_out.name, *self._args]
             proc = await asyncio.create_subprocess_exec(
@@ -118,7 +118,7 @@ class Scanner:
         self._args.extend(targets)
         return self
 
-    def with_ports(self, *ports: int | str) -> Self:
+    def with_ports(self, *ports: Union[int, str]) -> Self:
         if not ports:
             raise ValueError("At least one port must be provided.")
 
