@@ -5,7 +5,6 @@ import tempfile
 import time
 from abc import abstractmethod
 from collections.abc import Callable
-from dataclasses import dataclass, field
 from typing import Any
 
 from aiofiles import tempfile as atempfile
@@ -15,11 +14,14 @@ from nmass.model.elements import NmapRun
 from nmass.utils import validate_target
 
 
-@dataclass
 class Scanner:
-    bin_path: str = ""
-    _args: list[str] = field(default_factory=lambda: [], init=False)
-    _callbacks: list[Callable[[NmapRun], Any]] = field(default_factory=lambda: [], init=False)
+    def __init__(self, bin_path: str = "") -> None:
+        self.bin_path = bin_path
+        self._args: list[str] = []
+        self._callbacks: list[Callable[[NmapRun], Any]] = []
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} [{self.bin_path} {' '.join(self._args)}]>"
 
     @abstractmethod
     def run(self, timeout: float | None, with_output: bool) -> NmapRun | None:

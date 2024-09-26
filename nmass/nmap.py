@@ -2,7 +2,6 @@ import asyncio
 import logging
 import shutil
 import subprocess
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
@@ -15,10 +14,10 @@ from nmass.scanner import Scanner
 from nmass.utils import as_root
 
 
-@dataclass
 class Nmap(Scanner):
-    def __post_init__(self):
-        """Initialize Nmap instance and verify if nmap is installed."""
+    def __init__(self, bin_path: str = "") -> None:
+        super().__init__(bin_path)
+
         if self.bin_path == "" or not Path(self.bin_path).is_file():
             if w := shutil.which("nmap"):
                 self.bin_path = w

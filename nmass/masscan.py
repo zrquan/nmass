@@ -2,7 +2,6 @@ import asyncio
 import logging
 import shutil
 import subprocess
-from dataclasses import dataclass
 from typing import Literal
 
 from typing_extensions import Self
@@ -13,10 +12,10 @@ from nmass.scanner import Scanner
 from nmass.utils import as_root
 
 
-@dataclass
 class Masscan(Scanner):
-    def __post_init__(self):
-        """Initialize Masscan instance and verify if masscan is installed."""
+    def __init__(self, bin_path: str = "") -> None:
+        super().__init__(bin_path)
+
         if self.bin_path == "":
             if w := shutil.which("masscan"):
                 self.bin_path = w
