@@ -1,29 +1,80 @@
-[tool.poetry]
+[project]
 name = "nmass"
 version = "0.1.4"
-description = "A python3 library that makes it easier to use nmap and masscan"
-authors = ["4shen0ne <4shen.01@gmail.com>"]
-license = "MIT"
+description = "A python3 library that makes it easier to use nmap and masscan."
+authors = [{ name = "4shen0ne", email = "4shen.01@gmail.com" }]
 readme = "README.md"
+keywords = ['python','nmap','masscan']
+requires-python = ">=3.9,<4.0"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "aiofiles>=24.1.0",
+    "pydantic-xml>=2.13.1",
+    "typing-extensions>=4.12.2",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.9"
-pydantic-xml = "^2.11.0"
-aiofiles = "^24.1.0"
+[project.urls]
+Homepage = "https://zrquan.github.io/nmass/"
+Repository = "https://github.com/zrquan/nmass"
+Documentation = "https://zrquan.github.io/nmass/"
 
-[tool.poetry.group.test.dependencies]
-pre-commit = "^3.8.0"
-pytest = "^8.3.2"
-
-[tool.poetry-dynamic-versioning]
-enable = true
-
-[tool.ruff]
-line-length = 120
-
-[tool.mypy]
-plugins = ["pydantic_xml.mypy"]
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.2.0",
+    "pre-commit>=2.20.0",
+    "tox-uv>=1.11.3",
+    "deptry>=0.20.0",
+    "mypy>=0.991",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.6.9",
+    "mkdocs>=1.4.2",
+    "mkdocs-material>=8.5.10",
+    "mkdocstrings[python]>=0.26.1",
+    "types-aiofiles>=24.1.0.20240626",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.mypy]
+files = ["nmass"]
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+plugins = ["pydantic_xml.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.format]
+preview = true
+
+[tool.coverage.report]
+skip_empty = true
+
+[tool.coverage.run]
+branch = true
+source = ["nmass"]

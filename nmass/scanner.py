@@ -40,7 +40,7 @@ class Scanner:
             except subprocess.TimeoutExpired:
                 raise
             except subprocess.CalledProcessError as e:
-                logging.error(f"Command failed with error: {e.stderr.decode()}")
+                logging.exception(f"Command failed with error: {e.stderr.decode()}")
                 raise
             except Exception as why:
                 logging.exception(f"Unexpected error running command: {why}")
@@ -52,7 +52,7 @@ class Scanner:
                         try:
                             f(result)
                         except Exception as why:
-                            logging.error(f"Error running callback function: {why}")
+                            logging.exception(f"Error running callback function: {why}")
                 return result
 
             return None

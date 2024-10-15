@@ -8,7 +8,7 @@ Nmass is a python3 library that makes it easier for developers to use **nmap and
 
 ### Basic nmap example
 
-``` python
+```python
 # nmap_example.py
 nm = (
     Nmap()
@@ -26,7 +26,7 @@ if result := nm.run(with_output=False):
 <details>
   <summary>python nmap_example.py | jq</summary>
 
-  ``` json
+  ```json
   {
     "scanner": "nmap",
     "args": "/usr/bin/nmap -oX /tmp/tmpv7ici52_ --top-ports 100 -sV -sC -Pn -n 172.18.0.2",
@@ -134,7 +134,7 @@ if result := nm.run(with_output=False):
 
 ### Basic masscan example
 
-``` python
+```python
 # masscan_example.py
 ms = (
     Masscan()
@@ -149,7 +149,7 @@ if result := ms.run(with_output=False):
 <details>
   <summary>sudo python masscan_example.py | jq</summary>
 
-  ``` json
+  ```json
   {
     "scanner": "masscan",
     "start": "1722593029",

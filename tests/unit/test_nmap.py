@@ -13,9 +13,7 @@ def test_with_random_targets(nmap_instance):
     number = 5
     nmap_instance.with_random_targets(number)
     assert "-iR" in nmap_instance._args, f"Expected '-iR' in args, got {nmap_instance._args}"
-    assert (
-        str(number) in nmap_instance._args
-    ), f"Expected '{number}' in args, got {nmap_instance._args}"
+    assert str(number) in nmap_instance._args, f"Expected '{number}' in args, got {nmap_instance._args}"
 
 
 def test_with_list_scan(nmap_instance):
@@ -37,36 +35,28 @@ def test_with_syn_discovery(nmap_instance):
     ports = ["22", "80"]
     nmap_instance.with_syn_discovery(*ports)
     expected_arg = f"-PS{','.join(ports)}"
-    assert (
-        expected_arg in nmap_instance._args
-    ), f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
+    assert expected_arg in nmap_instance._args, f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
 
 
 def test_with_ack_discovery(nmap_instance):
     ports = ["22", "80"]
     nmap_instance.with_ack_discovery(*ports)
     expected_arg = f"-PA{','.join(ports)}"
-    assert (
-        expected_arg in nmap_instance._args
-    ), f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
+    assert expected_arg in nmap_instance._args, f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
 
 
 def test_with_udp_discovery(nmap_instance):
     ports = ["53", "123"]
     nmap_instance.with_udp_discovery(*ports)
     expected_arg = f"-PU{','.join(ports)}"
-    assert (
-        expected_arg in nmap_instance._args
-    ), f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
+    assert expected_arg in nmap_instance._args, f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
 
 
 def test_with_sctp_discovery(nmap_instance):
     ports = ["80", "443"]
     nmap_instance.with_sctp_discovery(*ports)
     expected_arg = f"-PY{','.join(ports)}"
-    assert (
-        expected_arg in nmap_instance._args
-    ), f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
+    assert expected_arg in nmap_instance._args, f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
 
 
 def test_with_icmp_echo_discovery(nmap_instance):
@@ -88,9 +78,7 @@ def test_with_ip_protocol_ping_discovery(nmap_instance):
     protocols = ["tcp", "udp"]
     nmap_instance.with_ip_protocol_ping_discovery(*protocols)
     expected_arg = f"-PO{','.join(protocols)}"
-    assert (
-        expected_arg in nmap_instance._args
-    ), f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
+    assert expected_arg in nmap_instance._args, f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
 
 
 def test_without_dns_resolution(nmap_instance):
@@ -114,16 +102,12 @@ def test_with_custom_dns_servers(nmap_instance):
 
 def test_with_system_dns(nmap_instance):
     nmap_instance.with_system_dns()
-    assert (
-        "--system-dns" in nmap_instance._args
-    ), f"Expected '--system-dns' in args, got {nmap_instance._args}"
+    assert "--system-dns" in nmap_instance._args, f"Expected '--system-dns' in args, got {nmap_instance._args}"
 
 
 def test_with_traceroute(nmap_instance):
     nmap_instance.with_traceroute()
-    assert (
-        "--traceroute" in nmap_instance._args
-    ), f"Expected '--traceroute' in args, got {nmap_instance._args}"
+    assert "--traceroute" in nmap_instance._args, f"Expected '--traceroute' in args, got {nmap_instance._args}"
 
 
 def test_with_syn_scan(nmap_instance):
@@ -268,23 +252,17 @@ def test_with_version_intensity(nmap_instance):
 
 def test_with_version_light(nmap_instance):
     nmap_instance.with_version_light()
-    assert (
-        "--version-light" in nmap_instance._args
-    ), f"Expected '--version-light' in args, got {nmap_instance._args}"
+    assert "--version-light" in nmap_instance._args, f"Expected '--version-light' in args, got {nmap_instance._args}"
 
 
 def test_with_version_all(nmap_instance):
     nmap_instance.with_version_all()
-    assert (
-        "--version-all" in nmap_instance._args
-    ), f"Expected '--version-all' in args, got {nmap_instance._args}"
+    assert "--version-all" in nmap_instance._args, f"Expected '--version-all' in args, got {nmap_instance._args}"
 
 
 def test_with_version_trace(nmap_instance):
     nmap_instance.with_version_trace()
-    assert (
-        "--version-trace" in nmap_instance._args
-    ), f"Expected '--version-trace' in args, got {nmap_instance._args}"
+    assert "--version-trace" in nmap_instance._args, f"Expected '--version-trace' in args, got {nmap_instance._args}"
 
 
 def test_with_default_script(nmap_instance):
@@ -321,9 +299,7 @@ def test_with_script_arguments_file(nmap_instance):
 
 def test_with_script_trace(nmap_instance):
     nmap_instance.with_script_trace()
-    assert (
-        "--script-trace" in nmap_instance._args
-    ), f"Expected '--script-trace' in args, got {nmap_instance._args}"
+    assert "--script-trace" in nmap_instance._args, f"Expected '--script-trace' in args, got {nmap_instance._args}"
 
 
 def test_with_script_update_db(nmap_instance):
@@ -555,9 +531,7 @@ def test_with_spoof_mac(nmap_instance):
 
 def test_with_bad_sum(nmap_instance):
     nmap_instance.with_bad_sum()
-    assert (
-        "--badsum" in nmap_instance._args
-    ), f"Expected '--badsum' in args, got {nmap_instance._args}"
+    assert "--badsum" in nmap_instance._args, f"Expected '--badsum' in args, got {nmap_instance._args}"
 
 
 def test_with_output_file(nmap_instance):
@@ -572,7 +546,7 @@ def test_with_output_file(nmap_instance):
 def test_with_verbose(nmap_instance):
     level = 2
     nmap_instance.with_verbose(level)
-    expected_arg = f"-{'v'*level}"
+    expected_arg = f"-{'v' * level}"
     assert expected_arg in " ".join(
         nmap_instance._args
     ), f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
@@ -581,7 +555,7 @@ def test_with_verbose(nmap_instance):
 def test_with_debugging(nmap_instance):
     level = 2
     nmap_instance.with_debugging(level)
-    expected_arg = f"-{'d'*level}"
+    expected_arg = f"-{'d' * level}"
     assert expected_arg in " ".join(
         nmap_instance._args
     ), f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
@@ -589,9 +563,7 @@ def test_with_debugging(nmap_instance):
 
 def test_with_reason(nmap_instance):
     nmap_instance.with_reason()
-    assert (
-        "--reason" in nmap_instance._args
-    ), f"Expected '--reason' in args, got {nmap_instance._args}"
+    assert "--reason" in nmap_instance._args, f"Expected '--reason' in args, got {nmap_instance._args}"
 
 
 def test_without_closed_ports(nmap_instance):
@@ -601,9 +573,7 @@ def test_without_closed_ports(nmap_instance):
 
 def test_with_packet_trace(nmap_instance):
     nmap_instance.with_packet_trace()
-    assert (
-        "--packet-trace" in nmap_instance._args
-    ), f"Expected '--packet-trace' in args, got {nmap_instance._args}"
+    assert "--packet-trace" in nmap_instance._args, f"Expected '--packet-trace' in args, got {nmap_instance._args}"
 
 
 def test_with_ipv6(nmap_instance):
@@ -628,27 +598,19 @@ def test_with_data_dir(nmap_instance):
 
 def test_with_send_ethernet(nmap_instance):
     nmap_instance.with_send_ethernet()
-    assert (
-        "--send-eth" in nmap_instance._args
-    ), f"Expected '--send-eth' in args, got {nmap_instance._args}"
+    assert "--send-eth" in nmap_instance._args, f"Expected '--send-eth' in args, got {nmap_instance._args}"
 
 
 def test_with_send_ip(nmap_instance):
     nmap_instance.with_send_ip()
-    assert (
-        "--send-ip" in nmap_instance._args
-    ), f"Expected '--send-ip' in args, got {nmap_instance._args}"
+    assert "--send-ip" in nmap_instance._args, f"Expected '--send-ip' in args, got {nmap_instance._args}"
 
 
 def test_with_privileged(nmap_instance):
     nmap_instance.with_privileged()
-    assert (
-        "--privileged" in nmap_instance._args
-    ), f"Expected '--privileged' in args, got {nmap_instance._args}"
+    assert "--privileged" in nmap_instance._args, f"Expected '--privileged' in args, got {nmap_instance._args}"
 
 
 def test_without_privileged(nmap_instance):
     nmap_instance.without_privileged()
-    assert (
-        "--unprivileged" in nmap_instance._args
-    ), f"Expected '--unprivileged' in args, got {nmap_instance._args}"
+    assert "--unprivileged" in nmap_instance._args, f"Expected '--unprivileged' in args, got {nmap_instance._args}"

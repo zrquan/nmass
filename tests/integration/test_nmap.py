@@ -13,9 +13,7 @@ def nmap_bin():
 
 def test_http_title(nmap_bin):
     result = nmap_bin.with_targets(CRAWLMAZE).with_ports(443).with_scripts("http-title").run()
-    assert (
-        result.hosts[0].ports.ports[0].scripts[0].output == "CrawlMaze - Testbed for Web Crawlers."
-    )
+    assert result.hosts[0].ports.ports[0].scripts[0].output == "CrawlMaze - Testbed for Web Crawlers."
 
 
 def test_service_info(nmap_bin):

@@ -1,20 +1,27 @@
 import ctypes
 import os
 import string
+import sys
 from functools import wraps
+from typing import Callable, TypeVar
+
+from typing_extensions import ParamSpec
 
 from nmass.errors import NmapArgumentError
 
+P = ParamSpec("P")
+T = TypeVar("T")
 
-def as_root(func):
+
+def as_root(func: Callable[P, T]) -> Callable[P, T]:
     """Decorator to ensure the decorated function is executed with root/administrator privileges.
 
     :param func: Function that requires elevated privileges to run.
     """
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
-        if os.name == "nt":
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+        if sys.platform == "win32":
             # Windows OS: Check for administrator privileges
             try:
                 is_admin = ctypes.windll.shell32.IsUserAnAdmin()
@@ -42,6 +49,4 @@ def validate_target(target: str) -> None:
     if not set(target).issubset(allowed_characters):
         raise NmapArgumentError(f"Target '{target}' contains invalid characters", "target")
     elif target.startswith("-") or target.endswith("-"):
-        raise NmapArgumentError(
-            f"Target '{target}' cannot begin or end with a dash ('-')", "target"
-        )
+        raise NmapArgumentError(f"Target '{target}' cannot begin or end with a dash ('-')", "target")
