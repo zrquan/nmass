@@ -50,7 +50,7 @@ jobs:
         shell: bash
 
       - name: Run tests
-        run: uv run python -m pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+        run: make unit-test
 
       - name: Check typing
         run: uv run mypy
