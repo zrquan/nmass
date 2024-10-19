@@ -5,12 +5,12 @@ import subprocess
 from pathlib import Path
 from typing import Literal, Optional
 
-from typing_extensions import Self
+from typing_extensions import Self, Unpack
 
 from nmass.errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
 from nmass.model.elements import Address, NmapRun
 from nmass.model.enums import TCPFlag, TimingTemplate
-from nmass.scanner import Scanner
+from nmass.scanner import ProcessArgs, Scanner
 from nmass.utils import as_root
 
 
@@ -28,6 +28,7 @@ class Nmap(Scanner):
         self,
         timeout: Optional[float] = None,
         with_output: bool = False,
+        **kwargs: Unpack[ProcessArgs],
     ) -> Optional[NmapRun]:
         """Run nmap command.
 
@@ -47,6 +48,7 @@ class Nmap(Scanner):
         self,
         timeout: Optional[float] = None,
         with_output: bool = False,
+        **kwargs: Unpack[ProcessArgs],
     ) -> Optional[NmapRun]:
         """Run nmap command asynchronously.
 

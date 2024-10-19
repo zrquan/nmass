@@ -4,11 +4,11 @@ import shutil
 import subprocess
 from typing import Literal, Optional
 
-from typing_extensions import Self
+from typing_extensions import Self, Unpack
 
 from nmass.errors import MasscanExecutionError, MasscanNotInstalledError
 from nmass.model.elements import Address, NmapRun
-from nmass.scanner import Scanner
+from nmass.scanner import ProcessArgs, Scanner
 from nmass.utils import as_root
 
 
@@ -27,6 +27,7 @@ class Masscan(Scanner):
         self,
         timeout: Optional[float] = None,
         with_output: bool = False,
+        **kwargs: Unpack[ProcessArgs],
     ) -> Optional[NmapRun]:
         """Run masscan command.
 
@@ -48,6 +49,7 @@ class Masscan(Scanner):
         timeout: Optional[float] = None,
         # FIXME: 异步执行 masscan 时，没有输出进度和倒计时那一行
         with_output: bool = False,
+        **kwargs: Unpack[ProcessArgs],
     ) -> Optional[NmapRun]:
         """Run masscan command asynchronously.
 

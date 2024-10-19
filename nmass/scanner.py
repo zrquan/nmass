@@ -1,17 +1,30 @@
 import asyncio
 import logging
+import os
 import subprocess
 import tempfile
 import time
 from abc import abstractmethod
 from collections.abc import Callable
-from typing import Any, Optional, Union
+from typing import Any, Optional, TypedDict, Union
 
 from aiofiles import tempfile as atempfile
-from typing_extensions import Self
+from typing_extensions import Self, Unpack
 
 from nmass.model.elements import NmapRun
 from nmass.utils import validate_target
+
+
+class ProcessArgs(TypedDict, total=False):
+    preexec_fn: Any
+    close_fds: bool
+    cwd: Union[str, bytes, os.PathLike]
+    env: dict[str, str]
+    restore_signals: bool
+    start_new_session: bool
+    user: str
+    group: str
+    umask: int
 
 
 class Scanner:
@@ -24,19 +37,16 @@ class Scanner:
         return f"<{self.__class__.__name__} [{self.bin_path} {' '.join(self._args)}]>"
 
     @abstractmethod
-    def run(self, timeout: Optional[float], with_output: bool) -> Optional[NmapRun]:
+    def run(self, timeout: Optional[float], with_output: bool, **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
         raise NotImplementedError()
 
-    def _run_command(self, timeout: Optional[float], with_output: bool) -> Optional[NmapRun]:
+    def _run_command(
+        self, timeout: Optional[float], with_output: bool, **kwargs: Unpack[ProcessArgs]
+    ) -> Optional[NmapRun]:
         with tempfile.NamedTemporaryFile() as xml_out:
             cmd = [self.bin_path, "-oX", xml_out.name, *self._args]
             try:
-                subprocess.run(
-                    cmd,
-                    check=True,
-                    timeout=timeout,
-                    capture_output=not with_output,
-                )
+                subprocess.run(cmd, check=True, timeout=timeout, capture_output=not with_output, **kwargs)
             except subprocess.TimeoutExpired:
                 raise
             except subprocess.CalledProcessError as e:
@@ -58,10 +68,14 @@ class Scanner:
             return None
 
     @abstractmethod
-    async def arun(self, timeout: Optional[float], with_output: bool) -> Optional[NmapRun]:
+    async def arun(
+        self, timeout: Optional[float], with_output: bool, **kwargs: Unpack[ProcessArgs]
+    ) -> Optional[NmapRun]:
         raise NotImplementedError()
 
-    async def _arun_command(self, timeout: Optional[float], with_output: bool) -> Optional[NmapRun]:
+    async def _arun_command(
+        self, timeout: Optional[float], with_output: bool, **kwargs: Unpack[ProcessArgs]
+    ) -> Optional[NmapRun]:
         async with atempfile.NamedTemporaryFile() as xml_out:
             cmd_args = ["-ox", xml_out.name, *self._args]
             proc = await asyncio.create_subprocess_exec(
@@ -69,6 +83,7 @@ class Scanner:
                 *cmd_args,  # type: ignore
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.STDOUT,
+                **kwargs,
             )
 
             if with_output:
