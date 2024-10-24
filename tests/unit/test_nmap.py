@@ -9,6 +9,10 @@ def nmap_instance():
     return Nmap(bin_path="/usr/bin/nmap")
 
 
+def test_version(nmap_instance):
+    assert nmap_instance.info.version.startswith("7.")
+
+
 def test_with_random_targets(nmap_instance):
     number = 5
     nmap_instance.with_random_targets(number)

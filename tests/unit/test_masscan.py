@@ -8,6 +8,10 @@ def masscan_instance():
     return Masscan(bin_path="/usr/bin/masscan")
 
 
+def test_version(masscan_instance):
+    assert masscan_instance.info.version.startswith("1.")
+
+
 def test_with_rate(masscan_instance):
     rate = 1000
     masscan_instance.with_rate(rate)

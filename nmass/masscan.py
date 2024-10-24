@@ -2,6 +2,7 @@ import asyncio
 import logging
 import shutil
 import subprocess
+from collections import namedtuple
 from typing import Literal, Optional
 
 from typing_extensions import Self, Unpack
@@ -10,6 +11,8 @@ from nmass.errors import MasscanExecutionError, MasscanNotInstalledError
 from nmass.model.elements import Address, NmapRun
 from nmass.scanner import ProcessArgs, Scanner
 from nmass.utils import as_root
+
+MasscanInfo = namedtuple("MasscanInfo", "version compiled_time compiler os cpu git_version")
 
 
 class Masscan(Scanner):
@@ -21,6 +24,23 @@ class Masscan(Scanner):
                 self.bin_path = w
             else:
                 raise MasscanNotInstalledError()
+
+    @property
+    def info(self) -> MasscanInfo:
+        proc = subprocess.run([self.bin_path, "--version"], capture_output=True)
+        info = proc.stdout.splitlines()
+
+        def clean(line: bytes) -> str:
+            return line.decode().split(":")[1].strip()
+
+        return MasscanInfo(
+            info[1].decode().split(" ")[2],
+            clean(info[2]),
+            clean(info[3]),
+            clean(info[4]),
+            clean(info[5]),
+            clean(info[6]),
+        )
 
     @as_root
     def run(

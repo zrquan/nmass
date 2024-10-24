@@ -2,6 +2,7 @@ import asyncio
 import logging
 import shutil
 import subprocess
+from collections import namedtuple
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -13,6 +14,8 @@ from nmass.model.enums import TCPFlag, TimingTemplate
 from nmass.scanner import ProcessArgs, Scanner
 from nmass.utils import as_root
 
+NmapInfo = namedtuple("NmapInfo", "version platform compiled_with compiled_without nsock_engines")
+
 
 class Nmap(Scanner):
     def __init__(self, bin_path: str = "") -> None:
@@ -23,6 +26,22 @@ class Nmap(Scanner):
                 self.bin_path = w
             else:
                 raise NmapNotInstalledError()
+
+    @property
+    def info(self) -> NmapInfo:
+        proc = subprocess.run([self.bin_path, "--version"], capture_output=True)
+        info = proc.stdout.splitlines()
+
+        def clean(line: bytes) -> str:
+            return line.decode().split(":")[1].strip()
+
+        return NmapInfo(
+            info[0].decode().split(" ")[2],
+            clean(info[1]),
+            clean(info[2]).split(" "),
+            clean(info[3]).split(" "),
+            clean(info[4]).split(" "),
+        )
 
     def run(
         self,
