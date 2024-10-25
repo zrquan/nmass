@@ -7,10 +7,10 @@ from typing import Literal, Optional
 
 from typing_extensions import Self, Unpack
 
-from nmass.errors import MasscanExecutionError, MasscanNotInstalledError
-from nmass.model.elements import Address, NmapRun
-from nmass.scanner import ProcessArgs, Scanner
-from nmass.utils import as_root
+from .errors import MasscanExecutionError, MasscanNotInstalledError
+from .model.elements import Address, NmapRun
+from .scanner import ProcessArgs, Scanner
+from .utils import as_root
 
 MasscanInfo = namedtuple("MasscanInfo", "version compiled_time compiler os cpu git_version")
 

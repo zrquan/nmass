@@ -11,8 +11,8 @@ from typing import Any, Optional, TypedDict, Union
 from aiofiles import tempfile as atempfile
 from typing_extensions import Self, Unpack
 
-from nmass.model.elements import NmapRun
-from nmass.utils import validate_target
+from .model.elements import NmapRun
+from .utils import validate_target
 
 
 class ProcessArgs(TypedDict, total=False):

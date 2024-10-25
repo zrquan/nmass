@@ -2,7 +2,7 @@ from typing import Literal, Optional
 
 from pydantic_xml import BaseXmlModel, RootXmlModel, attr, element, wrapped
 
-from nmass.model.enums import HostState, PortProtocol, PortState, ScanType
+from .enums import HostState, PortProtocol, PortState, ScanType
 
 
 class CPE(RootXmlModel[str]):

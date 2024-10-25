@@ -8,11 +8,11 @@ from typing import Literal, Optional
 
 from typing_extensions import Self, Unpack
 
-from nmass.errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
-from nmass.model.elements import Address, NmapRun
-from nmass.model.enums import TCPFlag, TimingTemplate
-from nmass.scanner import ProcessArgs, Scanner
-from nmass.utils import as_root
+from .errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
+from .model.elements import Address, NmapRun
+from .model.enums import TCPFlag, TimingTemplate
+from .scanner import ProcessArgs, Scanner
+from .utils import as_root
 
 NmapInfo = namedtuple("NmapInfo", "version platform compiled_with compiled_without nsock_engines")
 

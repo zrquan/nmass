@@ -7,7 +7,7 @@ from typing import Callable, TypeVar
 
 from typing_extensions import ParamSpec
 
-from nmass.errors import NmapArgumentError
+from .errors import NmapArgumentError
 
 P = ParamSpec("P")
 T = TypeVar("T")
