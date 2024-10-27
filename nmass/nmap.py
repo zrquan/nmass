@@ -11,6 +11,7 @@ from typing_extensions import Self, Unpack
 from .errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
 from .model.elements import Address, NmapRun
 from .model.enums import TCPFlag, TimingTemplate
+from .model.iflist import Interface, InterfaceList, Route
 from .scanner import ProcessArgs, Scanner
 from .utils import as_root
 
@@ -792,13 +793,53 @@ class Nmap(Scanner):
         return self
 
     # TODO:
-    # --iflist: Print host interfaces and routes (for debugging)
     # --append-output: Append to rather than clobber specified output files
     # --resume <filename>: Resume an aborted scan
     # --noninteractive: Disable runtime interactions via keyboard
     # --stylesheet <path/URL>: XSL stylesheet to transform XML output to HTML
     # --webxml: Reference stylesheet from Nmap.Org for more portable XML
     # --no-stylesheet: Prevent associating of XSL stylesheet w/XML output
+
+    def iflist(self) -> InterfaceList:
+        proc = subprocess.run([self.bin_path, "--iflist"], capture_output=True)
+        lines = proc.stdout.splitlines()
+        split: int
+
+        for i, line in enumerate(lines):
+            if b"*ROUTES*" in line:
+                split = i
+                break
+
+        interfaces: list[Interface] = []
+        for line in lines[3 : split - 1]:
+            fields = line.decode().split()
+            i = Interface(
+                device=fields[0],
+                short=fields[1].strip("()"),
+                ip=fields[2].split("/")[0],
+                ip_mask=fields[2].split("/")[1],
+                type_=fields[3],
+                is_up=fields[4] == "up",
+                mtu=fields[5],
+            )
+            if len(fields) == 7:
+                i.mac = fields[6]
+            interfaces.append(i)
+
+        routes: list[Route] = []
+        for line in lines[split + 2 : -1]:
+            fields = line.decode().split()
+            r = Route(
+                dest_ip=fields[0].split("/")[0],
+                dest_ip_mask=fields[0].split("/")[1],
+                device=fields[1],
+                metric=fields[2],
+            )
+            if len(fields) == 4:
+                r.gateway = fields[3]
+            routes.append(r)
+
+        return InterfaceList(interfaces=interfaces, routes=routes)
 
     ### MISC ###
     # ignore: -V: Print version number
