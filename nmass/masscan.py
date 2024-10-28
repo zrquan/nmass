@@ -3,7 +3,7 @@ import logging
 import shutil
 import subprocess
 from collections import namedtuple
-from typing import Literal, Optional
+from typing import Optional
 
 from typing_extensions import Self, Unpack
 
@@ -345,22 +345,4 @@ class Masscan(Scanner):
     def with_sL(self) -> Self:
         """Create a list of random addresses without scanning (-sL)."""
         self._args.append("-sL")
-        return self
-
-    def with_output_file(
-        self,
-        filename: str,
-        format: Literal["B", "X", "G", "J", "L"],
-    ) -> Self:
-        """Output scan in specified format (-oB, -oX, -oG, -oJ, -oL).
-
-        :param filename: Name of output file
-        :param format:
-          - B for binary
-          - X for XML
-          - G for grepable
-          - J for JSON
-          - L for list
-        """
-        self._args.extend((f"-o{format}", filename))
         return self

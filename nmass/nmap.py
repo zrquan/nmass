@@ -4,7 +4,7 @@ import shutil
 import subprocess
 from collections import namedtuple
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Optional
 
 from typing_extensions import Self, Unpack
 
@@ -742,24 +742,6 @@ class Nmap(Scanner):
         return self
 
     ### OUTPUT ###
-
-    def with_output_file(
-        self,
-        filename: str,
-        format: Literal["N", "X", "S", "G", "A"] = "N",
-    ) -> Self:
-        """Output scan in specified format (-oN, -oX, -oS, -oG, -oA).
-
-        :param filename: Name of output file
-        :param format:
-          - N for normal
-          - X for XML
-          - S for s|<rIpt
-          - G for kIddi3
-          - A means output in the three major formats at once
-        """
-        self._args.extend((f"-o{format}", filename))
-        return self
 
     def with_verbose(self, level: int = 1) -> Self:
         """Increase verbosity level (-v, -vv, ...).

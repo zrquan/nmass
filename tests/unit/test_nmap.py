@@ -546,15 +546,6 @@ def test_with_bad_sum(nmap_instance):
     assert "--badsum" in nmap_instance._args, f"Expected '--badsum' in args, got {nmap_instance._args}"
 
 
-def test_with_output_file(nmap_instance):
-    filename = "output.txt"
-    nmap_instance.with_output_file(filename, format="N")
-    expected_arg = f"-oN {filename}"
-    assert expected_arg in " ".join(
-        nmap_instance._args
-    ), f"Expected '{expected_arg}' in args, got {nmap_instance._args}"
-
-
 def test_with_verbose(nmap_instance):
     level = 2
     nmap_instance.with_verbose(level)

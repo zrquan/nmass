@@ -237,16 +237,6 @@ def test_with_sL(masscan_instance):
     assert "-sL" in masscan_instance._args, f"Expected '-sL' in args, got {masscan_instance._args}"
 
 
-def test_with_output_file(masscan_instance):
-    filename = "output.json"
-    format = "J"
-    masscan_instance.with_output_file(filename, format)
-    expected_arg = f"-o{format} {filename}"
-    assert expected_arg in " ".join(
-        masscan_instance._args
-    ), f"Expected '{expected_arg}' in args, got {masscan_instance._args}"
-
-
 def test_run_masscan(masscan_instance):
     with pytest.raises(PermissionError) as err:
         masscan_instance.run()
