@@ -13,6 +13,14 @@ def test_version(nmap_instance):
     assert nmap_instance.info.version.startswith("7.")
 
 
+def test_iflist(nmap_instance):
+    loopback = nmap_instance.iflist().interfaces[0]
+    assert loopback.device == "lo"
+    assert str(loopback.ip) == "127.0.0.1"
+    assert loopback.ip.is_loopback is True
+    assert loopback.is_up is True
+
+
 def test_with_random_targets(nmap_instance):
     number = 5
     nmap_instance.with_random_targets(number)
