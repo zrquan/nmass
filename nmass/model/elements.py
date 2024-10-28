@@ -1,5 +1,7 @@
 from typing import Literal, Optional
+from urllib.request import urlopen
 
+import lxml.etree as ET
 from pydantic_xml import BaseXmlModel, RootXmlModel, attr, element, wrapped
 
 from .enums import HostState, PortProtocol, PortState, ScanType
@@ -197,3 +199,10 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
     taskprogress: Optional[list[TaskProgress]] = element(default=None)
     hosts: list[Host] = element(default=[])
     stats: Optional[Stats] = element(default=None)
+
+    def to_html(self, xslt_path: str = "https://nmap.org/svn/docs/nmap.xsl", pretty_print: bool = False) -> str:
+        # https://stackoverflow.com/a/34035675
+        xslt = ET.parse(urlopen(xslt_path, timeout=10)) if xslt_path.startswith("https://") else ET.parse(xslt_path)
+        transform = ET.XSLT(xslt)
+        newdom = transform(self.to_xml_tree())
+        return ET.tostring(newdom, pretty_print=pretty_print)

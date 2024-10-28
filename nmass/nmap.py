@@ -842,8 +842,6 @@ class Nmap(Scanner):
         return InterfaceList(interfaces=interfaces, routes=routes)
 
     ### MISC ###
-    # ignore: -V: Print version number
-    # ignore: -h: Print this help summary page
 
     def with_ipv6(self) -> Self:
         """Scan targets using IPv6 (-6)."""
