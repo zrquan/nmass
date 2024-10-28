@@ -1,3 +1,5 @@
+import csv
+from io import BufferedWriter
 from typing import Literal, Optional
 from urllib.request import urlopen
 
@@ -8,6 +10,9 @@ from .enums import HostState, PortProtocol, PortState, ScanType
 
 
 class CPE(RootXmlModel[str]):
+    def __str__(self) -> str:
+        return self.root
+
     @property
     def part(self) -> str:
         return self.root.split(":")[1]
@@ -206,3 +211,24 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
         transform = ET.XSLT(xslt)
         newdom = transform(self.to_xml_tree())
         return ET.tostring(newdom, pretty_print=pretty_print)
+
+    def to_csv_file(self, file: BufferedWriter) -> None:
+        writer = csv.writer(file)
+        writer.writerow(["IP", "Port", "Protocol", "State", "Service", "Reason", "Product", "Version", "CPE"])
+        for host in self.hosts:
+            writer.writerow([f"{host.address[0].addr} ({host.status.state})", "", "", "", "", "", "", "", ""])
+
+            if host.ports is None or host.ports.ports is None:
+                continue
+            for port in host.ports.ports:
+                writer.writerow([
+                    "",
+                    str(port.portid),
+                    port.protocol,
+                    port.state.state,
+                    port.service.name,
+                    port.state.reason,
+                    port.service.product,
+                    port.service.version,
+                    str(port.service.cpe),
+                ])
