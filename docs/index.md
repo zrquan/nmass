@@ -11,8 +11,7 @@ Nmass is a python3 library that makes it easier for developers to use **nmap and
 
 ### Basic nmap example
 
-```python
-# nmap_example.py
+```python title="nmap_example.py"
 nm = (
     Nmap()
     .with_targets("172.18.0.2")
@@ -28,8 +27,7 @@ if result := nm.run(with_output=False):
 
 ### Basic masscan example
 
-```python
-# masscan_example.py
+```python title="masscan_example.py"
 ms = (
     Masscan()
     .with_targets("183.2.172.185")
@@ -44,11 +42,10 @@ if result := ms.run(with_output=False):
 
 Masscan is fast, and nmap is powerful. Why not combine the two?🤩 Start by using masscan to quickly detect open ports in bulk, then use nmap to perform in-depth scans on these open ports!
 
-```python
-# This is just an example, is not recommended to run
+```{.python .annotate hl_lines="10"}
 step1 = (
     Masscan()
-    .with_targets("10.0.0.0/8")
+    .with_targets("10.0.0.0/8") # (1)
     .with_ports(80, 443)
     .with_rate(10000)
 )
@@ -61,3 +58,5 @@ step2 = (
 )
 retult = step2.run()
 ```
+
+1. This is just an example, is not recommended to run.

@@ -22,8 +22,10 @@ plugins:
             docstring_style: sphinx
 theme:
   name: material
-  feature:
-    tabs: true
+  features:
+    # - tabs
+    - instant
+    - content.code.copy
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -50,9 +52,10 @@ extra:
       link: https://pypi.org/project/nmass
 
 markdown_extensions:
-  - toc:
-      permalink: true
-  - pymdownx.arithmatex:
-      generic: true
-  - codehilite:
-      css_class: highlight
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
