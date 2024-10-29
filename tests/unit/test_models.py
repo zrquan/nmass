@@ -37,7 +37,7 @@ def cpes() -> list[str]:
 def test_parse_xml_without_errors(xml_files):
     for path in xml_files.values():
         try:
-            with open(path) as file:
+            with open(path, "rb") as file:
                 nr = NmapRun.from_xml(file.read())
                 assert nr.scanner in ("nmap", "masscan")
                 print(f"✔ {path}")
@@ -80,7 +80,7 @@ def test_cpe_model(cpes):
 def test_hostnames(xml_files):
     for path in xml_files.values():
         try:
-            with open(path) as file:
+            with open(path, "rb") as file:
                 nr = NmapRun.from_xml(file.read())
                 for host in nr.hosts:
                     for hostname in host.hostnames:

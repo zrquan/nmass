@@ -209,26 +209,30 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
         # https://stackoverflow.com/a/34035675
         xslt = ET.parse(urlopen(xslt_path, timeout=10)) if xslt_path.startswith("https://") else ET.parse(xslt_path)
         transform = ET.XSLT(xslt)
-        newdom = transform(self.to_xml_tree())
-        return ET.tostring(newdom, pretty_print=pretty_print)
+        newdom = transform(self.to_xml_tree())  # type: ignore
+        return ET.tostring(newdom, pretty_print=pretty_print).decode()
 
     def to_csv_file(self, file: BufferedWriter) -> None:
-        writer = csv.writer(file)
+        writer = csv.writer(file)  # type: ignore
         writer.writerow(["IP", "Port", "Protocol", "State", "Service", "Reason", "Product", "Version", "CPE"])
         for host in self.hosts:
-            writer.writerow([f"{host.address[0].addr} ({host.status.state})", "", "", "", "", "", "", "", ""])
+            host_info = host.address[0].addr
+            if host.status is not None:
+                host_info += f" ({host.status.state})"
+            writer.writerow([host_info, "", "", "", "", "", "", "", ""])
 
             if host.ports is None or host.ports.ports is None:
                 continue
+
             for port in host.ports.ports:
                 writer.writerow([
                     "",
                     str(port.portid),
                     port.protocol,
                     port.state.state,
-                    port.service.name,
+                    port.service.name if port.service else "",
                     port.state.reason,
-                    port.service.product,
-                    port.service.version,
-                    str(port.service.cpe),
+                    port.service.product if port.service else "",
+                    port.service.version if port.service else "",
+                    str(port.service.cpe) if port.service else "",
                 ])

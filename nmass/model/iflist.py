@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, IPvAnyAddress
 
@@ -6,7 +6,7 @@ from pydantic import BaseModel, IPvAnyAddress
 class Interface(BaseModel):
     device: str
     short: str
-    ip: IPvAnyAddress | Literal["(none)"]
+    ip: Union[IPvAnyAddress, Literal["(none)"]]
     ip_mask: int
     type_: str
     is_up: bool

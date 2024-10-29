@@ -2,9 +2,8 @@ import asyncio
 import logging
 import shutil
 import subprocess
-from collections import namedtuple
 from pathlib import Path
-from typing import Optional
+from typing import NamedTuple, Optional
 
 from typing_extensions import Self, Unpack
 
@@ -15,7 +14,13 @@ from .model.iflist import Interface, InterfaceList, Route
 from .scanner import ProcessArgs, Scanner
 from .utils import as_root
 
-NmapInfo = namedtuple("NmapInfo", "version platform compiled_with compiled_without nsock_engines")
+
+class NmapInfo(NamedTuple):
+    version: str
+    platform: str
+    compiled_with: list[str]
+    compiled_without: list[str]
+    nsock_engines: list[str]
 
 
 class Nmap(Scanner):
@@ -795,7 +800,7 @@ class Nmap(Scanner):
         interfaces: list[Interface] = []
         for line in lines[3 : split - 1]:
             fields = line.decode().split()
-            i = Interface(
+            intf = Interface(
                 device=fields[0],
                 short=fields[1].strip("()"),
                 ip=fields[2].split("/")[0],
@@ -805,21 +810,21 @@ class Nmap(Scanner):
                 mtu=fields[5],
             )
             if len(fields) == 7:
-                i.mac = fields[6]
-            interfaces.append(i)
+                intf.mac = fields[6]
+            interfaces.append(intf)
 
         routes: list[Route] = []
         for line in lines[split + 2 : -1]:
             fields = line.decode().split()
-            r = Route(
+            route = Route(
                 dest_ip=fields[0].split("/")[0],
                 dest_ip_mask=fields[0].split("/")[1],
                 device=fields[1],
                 metric=fields[2],
             )
             if len(fields) == 4:
-                r.gateway = fields[3]
-            routes.append(r)
+                route.gateway = fields[3]  # type: ignore
+            routes.append(route)
 
         return InterfaceList(interfaces=interfaces, routes=routes)
 

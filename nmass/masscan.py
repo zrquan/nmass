@@ -2,8 +2,7 @@ import asyncio
 import logging
 import shutil
 import subprocess
-from collections import namedtuple
-from typing import Optional
+from typing import NamedTuple, Optional
 
 from typing_extensions import Self, Unpack
 
@@ -12,7 +11,14 @@ from .model.elements import Address, NmapRun
 from .scanner import ProcessArgs, Scanner
 from .utils import as_root
 
-MasscanInfo = namedtuple("MasscanInfo", "version compiled_time compiler os cpu git_version")
+
+class MasscanInfo(NamedTuple):
+    version: str
+    compiled_time: str
+    compiler: str
+    os: str
+    cpu: str
+    git_version: str
 
 
 class Masscan(Scanner):
