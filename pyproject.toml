@@ -43,6 +43,7 @@ dev-dependencies = [
     "mkdocstrings[python]>=0.26.1",
     "types-aiofiles>=24.1.0.20240626",
     "lxml-stubs>=0.5.1",
+    "pytest-asyncio>=0.24.0",
 ]
 
 [build-system]

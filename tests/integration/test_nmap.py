@@ -27,3 +27,9 @@ def test_service_info(nmap_bin):
 def test_ports(nmap_bin):
     result = nmap_bin.with_targets(SCANME).run()
     assert len(result.hosts[0].ports.ports) == 1000
+
+
+@pytest.mark.asyncio
+async def test_async_run(nmap_bin):
+    result = await nmap_bin.with_targets(SCANME).arun()
+    assert len(result.hosts[0].ports.ports) == 1000
