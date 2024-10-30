@@ -67,7 +67,7 @@ class Nmap(Scanner):
         except subprocess.CalledProcessError as e:
             raise NmapExecutionError(retcode=e.returncode, message=str(e.stderr))
         except subprocess.TimeoutExpired:
-            logging.warn("nmap scanning timeout")
+            logging.warning("Nmap scan timed out")
             raise
 
     async def arun(
@@ -85,7 +85,7 @@ class Nmap(Scanner):
         except subprocess.CalledProcessError as e:
             raise NmapExecutionError(retcode=e.returncode, message=str(e))
         except asyncio.TimeoutError:
-            logging.warn("asynchronous nmap scanning timeout")
+            logging.warning("Nmap async scan timed out")
             raise
 
     def with_step(self, model: NmapRun) -> Self:

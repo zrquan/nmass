@@ -1,6 +1,8 @@
 import asyncio
 import logging
 import shutil
+import socket
+import string
 import subprocess
 from typing import NamedTuple, Optional
 
@@ -64,7 +66,7 @@ class Masscan(Scanner):
         except subprocess.CalledProcessError as e:
             raise MasscanExecutionError(retcode=e.returncode, message=str(e))
         except subprocess.TimeoutExpired:
-            logging.warn("masscan scanning timeout")
+            logging.warning("Masscan scan timed out")
             raise
 
     @as_root
@@ -83,7 +85,7 @@ class Masscan(Scanner):
         except subprocess.CalledProcessError as e:
             raise MasscanExecutionError(retcode=e.returncode, message=str(e))
         except asyncio.TimeoutError:
-            logging.warn("asynchronous masscan scanning timeout")
+            logging.warning("Masscan async scan timed out")
             raise
 
     def with_step(self, model: NmapRun) -> Self:
@@ -109,6 +111,24 @@ class Masscan(Scanner):
                 targets.add(addr.addr)
             elif addr.addrtype == "ipv6":
                 logging.warning("IPv6 address is not supported in masscan")
+
+    def with_targets(self, *targets: str) -> Self:
+        """Specify the targets to be scanned.
+
+        :param targets: There are three valid formats.
+          The first is a single IPv4 address like "192.168.0.1".
+          The second is a range like "10.0.0.1-10.0.0.100".
+          The third is a CIDR address, like "0.0.0.0/0".
+        """
+        valid_characters = frozenset(string.digits + "./-")
+        parsed_targets = []
+        for t in targets:
+            if not set(t).issubset(valid_characters):
+                origin = t
+                t = socket.gethostbyname(t)
+                logging.warning(f"Replace {origin} with {t} (masscan doesn't like DNS name)")
+            parsed_targets.append(t)
+        return super().with_targets(*parsed_targets)
 
     def with_rate(self, rate: int) -> Self:
         """Set the packet transmission rate (--rate).
