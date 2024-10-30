@@ -52,17 +52,15 @@ class Masscan(Scanner):
     def run(
         self,
         timeout: Optional[float] = None,
-        with_output: bool = False,
         **kwargs: Unpack[ProcessArgs],
     ) -> Optional[NmapRun]:
         """Run masscan command.
 
         :param timeout: Timeout for masscan process, defaults to None
-        :param with_output: Print masscan's output, defaults to False
         :return: NmapRun object or None
         """
         try:
-            return self._run_command(timeout, with_output)
+            return self._run_command(timeout, **kwargs)
         except subprocess.CalledProcessError as e:
             raise MasscanExecutionError(retcode=e.returncode, message=str(e))
         except subprocess.TimeoutExpired:
@@ -73,18 +71,15 @@ class Masscan(Scanner):
     async def arun(
         self,
         timeout: Optional[float] = None,
-        # FIXME: 异步执行 masscan 时，没有输出进度和倒计时那一行
-        with_output: bool = False,
         **kwargs: Unpack[ProcessArgs],
     ) -> Optional[NmapRun]:
         """Run masscan command asynchronously.
 
         :param timeout: Timeout for masscan process, defaults to None
-        :param with_output: Print masscan's output, defaults to False
         :return: NmapRun object or None
         """
         try:
-            return await self._arun_command(timeout, with_output)
+            return await self._arun_command(timeout, **kwargs)
         except subprocess.CalledProcessError as e:
             raise MasscanExecutionError(retcode=e.returncode, message=str(e))
         except asyncio.TimeoutError:

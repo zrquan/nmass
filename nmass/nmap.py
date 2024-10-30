@@ -33,6 +33,9 @@ class Nmap(Scanner):
             else:
                 raise NmapNotInstalledError()
 
+        # fixed options
+        self._args += ["-vvv", "--noninteractive"]
+
     @property
     def info(self) -> NmapInfo:
         proc = subprocess.run([self.bin_path, "--version"], capture_output=True)
@@ -52,17 +55,15 @@ class Nmap(Scanner):
     def run(
         self,
         timeout: Optional[float] = None,
-        with_output: bool = False,
         **kwargs: Unpack[ProcessArgs],
     ) -> Optional[NmapRun]:
         """Run nmap command.
 
         :param timeout: Timeout for nmap process, defaults to None
-        :param with_output: Print nmap's output, defaults to False
         :return: NmapRun object or None
         """
         try:
-            return self._run_command(timeout, with_output)
+            return self._run_command(timeout)
         except subprocess.CalledProcessError as e:
             raise NmapExecutionError(retcode=e.returncode, message=str(e.stderr))
         except subprocess.TimeoutExpired:
@@ -72,17 +73,15 @@ class Nmap(Scanner):
     async def arun(
         self,
         timeout: Optional[float] = None,
-        with_output: bool = False,
         **kwargs: Unpack[ProcessArgs],
     ) -> Optional[NmapRun]:
         """Run nmap command asynchronously.
 
         :param timeout: Timeout for nmap process, defaults to None
-        :param with_output: Print nmap's output, defaults to False
         :return: NmapRun object or None
         """
         try:
-            return await self._arun_command(timeout, with_output)
+            return await self._arun_command(timeout)
         except subprocess.CalledProcessError as e:
             raise NmapExecutionError(retcode=e.returncode, message=str(e))
         except asyncio.TimeoutError:
@@ -783,9 +782,6 @@ class Nmap(Scanner):
     # --append-output: Append to rather than clobber specified output files
     # --resume <filename>: Resume an aborted scan
     # --noninteractive: Disable runtime interactions via keyboard
-    # --stylesheet <path/URL>: XSL stylesheet to transform XML output to HTML
-    # --webxml: Reference stylesheet from Nmap.Org for more portable XML
-    # --no-stylesheet: Prevent associating of XSL stylesheet w/XML output
 
     def iflist(self) -> InterfaceList:
         proc = subprocess.run([self.bin_path, "--iflist"], capture_output=True)

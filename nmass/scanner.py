@@ -2,13 +2,10 @@ import asyncio
 import logging
 import os
 import subprocess
-import tempfile
-import time
 from abc import abstractmethod
 from collections.abc import Callable
 from typing import Any, Optional, TypedDict, Union
 
-from aiofiles import tempfile as atempfile
 from typing_extensions import Self, Unpack
 
 from .model.elements import NmapRun
@@ -30,92 +27,71 @@ class ProcessArgs(TypedDict, total=False):
 class Scanner:
     def __init__(self, bin_path: str = "") -> None:
         self.bin_path = bin_path
-        self._args: list[str] = []
+        self._args: list[str] = ["-oX", "-"]
         self._callbacks: list[Callable[[NmapRun], Any]] = []
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} [{self.bin_path} {' '.join(self._args)}]>"
 
     @abstractmethod
-    def run(self, timeout: Optional[float], with_output: bool, **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
+    def run(self, timeout: Optional[float], **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
         raise NotImplementedError()
 
-    def _run_command(
-        self, timeout: Optional[float], with_output: bool, **kwargs: Unpack[ProcessArgs]
-    ) -> Optional[NmapRun]:
-        with tempfile.NamedTemporaryFile() as xml_out:
-            cmd = [self.bin_path, "-oX", xml_out.name, *self._args]
-            try:
-                subprocess.run(cmd, check=True, timeout=timeout, capture_output=not with_output, **kwargs)
-            except subprocess.TimeoutExpired:
-                raise
-            except subprocess.CalledProcessError as e:
-                logging.exception(f"Command failed with error: {e.stderr.decode()}")
-                raise
-            except Exception as why:
-                logging.exception(f"Unexpected error running command: {why}")
-            else:
-                result = NmapRun.from_xml(xml_out.read())
-                if self._callbacks:
-                    for f in self._callbacks:
-                        # 回调函数对 result 的修改会影响返回结果
-                        try:
-                            f(result)
-                        except Exception as why:
-                            logging.exception(f"Error running callback function: {why}")
-                return result
+    def _run_command(self, timeout: Optional[float], **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
+        cmd = [self.bin_path, *self._args]
+        try:
+            # masscan 使用 stderr 来输出扫描状态
+            output = subprocess.check_output(cmd, timeout=timeout, stderr=subprocess.DEVNULL, **kwargs)
+            result = NmapRun.from_xml(output)
+        except subprocess.TimeoutExpired:
+            raise
+        except subprocess.CalledProcessError as e:
+            logging.exception(f"Command failed with error: {e.stderr.decode()}")
+            raise
+        except Exception as why:
+            logging.exception(f"Unexpected error running command: {why}")
+        else:
+            if self._callbacks:
+                for func in self._callbacks:
+                    try:
+                        func(result)
+                    except Exception as why:
+                        logging.exception(f"Error running callback function: {why}")
+            return result
 
-            return None
+        return None
 
     @abstractmethod
-    async def arun(
-        self, timeout: Optional[float], with_output: bool, **kwargs: Unpack[ProcessArgs]
-    ) -> Optional[NmapRun]:
+    async def arun(self, timeout: Optional[float], **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
         raise NotImplementedError()
 
-    async def _arun_command(
-        self, timeout: Optional[float], with_output: bool, **kwargs: Unpack[ProcessArgs]
-    ) -> Optional[NmapRun]:
-        async with atempfile.NamedTemporaryFile() as xml_out:
-            cmd_args = ["-ox", xml_out.name, *self._args]
-            proc = await asyncio.create_subprocess_exec(
-                self.bin_path,
-                *cmd_args,  # type: ignore
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.STDOUT,
-                **kwargs,
-            )
+    async def _arun_command(self, timeout: Optional[float], **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
+        proc = await asyncio.create_subprocess_exec(
+            self.bin_path,
+            *self._args,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.DEVNULL,
+            **kwargs,
+        )
 
-            if with_output:
-                start_time = time.time()
-                killed = False
-                if proc.stdout:
-                    async for line in proc.stdout:
-                        print(line.decode().rstrip())
-                        if killed:
-                            continue
-                        if timeout and time.time() - start_time > timeout:
-                            proc.kill()
-                            killed = True
-                if killed:
-                    raise asyncio.TimeoutError()
-
-            try:
-                await asyncio.wait_for(proc.wait(), timeout=timeout)
-            except asyncio.TimeoutError:
-                raise
-            except Exception as why:
-                logging.exception(f"Unexpected error running command: {why}")
+        try:
+            await asyncio.wait_for(proc.wait(), timeout=timeout)
+        except asyncio.TimeoutError:
+            raise
+        except Exception as why:
+            logging.exception(f"Unexpected error running command: {why}")
+        else:
+            if proc.returncode and proc.returncode != 0:
+                raise subprocess.CalledProcessError(
+                    returncode=proc.returncode,
+                    cmd=f"{self.bin_path} {' '.join(self._args)}",
+                )
+            elif proc.stdout is None:
+                return None
             else:
-                if proc.returncode and proc.returncode != 0:
-                    raise subprocess.CalledProcessError(
-                        returncode=proc.returncode,
-                        cmd=f"{self.bin_path} {' '.join(cmd_args)}",  # type: ignore
-                    )
-                else:
-                    return NmapRun.from_xml(await xml_out.read())
+                return NmapRun.from_xml(await proc.stdout.read())
 
-            return None
+        return None
 
     def with_callbacks(self, *callbacks: Callable[[NmapRun], Any]) -> Self:
         self._callbacks.extend(callbacks)
