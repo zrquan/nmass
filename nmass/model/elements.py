@@ -1,6 +1,6 @@
 import csv
 from io import BufferedWriter
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 from urllib.request import urlopen
 
 import lxml.etree as ET
@@ -212,8 +212,13 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
         newdom = transform(self.to_xml_tree())  # type: ignore
         return ET.tostring(newdom, pretty_print=pretty_print).decode()
 
-    def to_csv_file(self, file: BufferedWriter) -> None:
-        writer = csv.writer(file)  # type: ignore
+    def to_csv_file(self, file: BufferedWriter, dialect: Union[str, csv.Dialect] = "excel") -> None:
+        """Write information to a CSV file.
+
+        :param file: A file-like object where the CSV data will be written
+        :param dialect: The CSV dialect used for formatting the file, defaults to "excel"
+        """
+        writer = csv.writer(file, dialect=dialect)  # type: ignore
         writer.writerow(["IP", "Port", "Protocol", "State", "Service", "Reason", "Product", "Version", "CPE"])
         for host in self.hosts:
             host_info = host.address[0].addr
