@@ -9,3 +9,7 @@ uv sync
 
 # Install pre-commit hooks
 uv run pre-commit install --install-hooks
+
+# Install nmap and masscan
+sudo apt-get update
+sudo apt-get -y install nmap masscan
