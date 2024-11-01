@@ -31,19 +31,18 @@ Documentation = "https://zrquan.github.io/nmass/"
 
 [tool.uv]
 dev-dependencies = [
-    "pytest>=7.2.0",
-    "pre-commit>=2.20.0",
-    "tox-uv>=1.11.3",
-    "deptry>=0.20.0",
-    "mypy>=0.991",
-    "pytest-cov>=4.0.0",
     "ruff>=0.6.9",
+    "pre-commit>=2.20.0",
+    "pytest>=7.2.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.24.0",
+    "mypy>=0.991",
+    "lxml-stubs>=0.5.1",
     "mkdocs>=1.4.2",
     "mkdocs-material>=8.5.10",
     "mkdocstrings[python]>=0.26.1",
-    "types-aiofiles>=24.1.0.20240626",
-    "lxml-stubs>=0.5.1",
-    "pytest-asyncio>=0.24.0",
+    "tox-uv>=1.11.3",
+    "deptry>=0.20.0",
 ]
 
 [build-system]
