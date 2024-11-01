@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nmass.model.elements" class="md-skip">
+        <a href="#nmaprun" class="md-skip">
           Skip to content
         </a>
       
@@ -323,17 +323,8 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Models
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -344,41 +335,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#nmass.model.elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      elements
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nmass.model.elements.NmapRun" class="md-nav__link">
-    <span class="md-ellipsis">
-      NmapRun
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -401,32 +357,8 @@
   
   
   
+    
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#nmass.model.elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      elements
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nmass.model.elements.NmapRun" class="md-nav__link">
-    <span class="md-ellipsis">
-      NmapRun
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -444,201 +376,27 @@
   
 
 
-  <h1>Models</h1>
-
-<div class="doc doc-object doc-module">
-
-
-
-<a id="nmass.model.elements"></a>
-    <div class="doc doc-contents first">
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="nmass.model.elements.NmapRun" class="doc doc-heading">
-            <code>NmapRun</code>
-
-
-</h2>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code>BaseXmlModel</code></p>
-
-
-        <p>This is the data model that maps with the Nmap (also Masscan) XML output.
-Refer to https://nmap.org/book/nmap-dtd.html for details.</p>
-
-
-
-
-
-
-              <details class="quote">
-                <summary>Source code in <code>nmass/model/elements.py</code></summary>
-                <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-182">182</a></span>
-<span class="normal"><a href="#__codelineno-0-183">183</a></span>
-<span class="normal"><a href="#__codelineno-0-184">184</a></span>
-<span class="normal"><a href="#__codelineno-0-185">185</a></span>
-<span class="normal"><a href="#__codelineno-0-186">186</a></span>
-<span class="normal"><a href="#__codelineno-0-187">187</a></span>
-<span class="normal"><a href="#__codelineno-0-188">188</a></span>
-<span class="normal"><a href="#__codelineno-0-189">189</a></span>
-<span class="normal"><a href="#__codelineno-0-190">190</a></span>
-<span class="normal"><a href="#__codelineno-0-191">191</a></span>
-<span class="normal"><a href="#__codelineno-0-192">192</a></span>
-<span class="normal"><a href="#__codelineno-0-193">193</a></span>
-<span class="normal"><a href="#__codelineno-0-194">194</a></span>
-<span class="normal"><a href="#__codelineno-0-195">195</a></span>
-<span class="normal"><a href="#__codelineno-0-196">196</a></span>
-<span class="normal"><a href="#__codelineno-0-197">197</a></span>
-<span class="normal"><a href="#__codelineno-0-198">198</a></span>
-<span class="normal"><a href="#__codelineno-0-199">199</a></span>
-<span class="normal"><a href="#__codelineno-0-200">200</a></span>
-<span class="normal"><a href="#__codelineno-0-201">201</a></span>
-<span class="normal"><a href="#__codelineno-0-202">202</a></span>
-<span class="normal"><a href="#__codelineno-0-203">203</a></span>
-<span class="normal"><a href="#__codelineno-0-204">204</a></span>
-<span class="normal"><a href="#__codelineno-0-205">205</a></span>
-<span class="normal"><a href="#__codelineno-0-206">206</a></span>
-<span class="normal"><a href="#__codelineno-0-207">207</a></span>
-<span class="normal"><a href="#__codelineno-0-208">208</a></span>
-<span class="normal"><a href="#__codelineno-0-209">209</a></span>
-<span class="normal"><a href="#__codelineno-0-210">210</a></span>
-<span class="normal"><a href="#__codelineno-0-211">211</a></span>
-<span class="normal"><a href="#__codelineno-0-212">212</a></span>
-<span class="normal"><a href="#__codelineno-0-213">213</a></span>
-<span class="normal"><a href="#__codelineno-0-214">214</a></span>
-<span class="normal"><a href="#__codelineno-0-215">215</a></span>
-<span class="normal"><a href="#__codelineno-0-216">216</a></span>
-<span class="normal"><a href="#__codelineno-0-217">217</a></span>
-<span class="normal"><a href="#__codelineno-0-218">218</a></span>
-<span class="normal"><a href="#__codelineno-0-219">219</a></span>
-<span class="normal"><a href="#__codelineno-0-220">220</a></span>
-<span class="normal"><a href="#__codelineno-0-221">221</a></span>
-<span class="normal"><a href="#__codelineno-0-222">222</a></span>
-<span class="normal"><a href="#__codelineno-0-223">223</a></span>
-<span class="normal"><a href="#__codelineno-0-224">224</a></span>
-<span class="normal"><a href="#__codelineno-0-225">225</a></span>
-<span class="normal"><a href="#__codelineno-0-226">226</a></span>
-<span class="normal"><a href="#__codelineno-0-227">227</a></span>
-<span class="normal"><a href="#__codelineno-0-228">228</a></span>
-<span class="normal"><a href="#__codelineno-0-229">229</a></span>
-<span class="normal"><a href="#__codelineno-0-230">230</a></span>
-<span class="normal"><a href="#__codelineno-0-231">231</a></span>
-<span class="normal"><a href="#__codelineno-0-232">232</a></span>
-<span class="normal"><a href="#__codelineno-0-233">233</a></span>
-<span class="normal"><a href="#__codelineno-0-234">234</a></span>
-<span class="normal"><a href="#__codelineno-0-235">235</a></span>
-<span class="normal"><a href="#__codelineno-0-236">236</a></span>
-<span class="normal"><a href="#__codelineno-0-237">237</a></span>
-<span class="normal"><a href="#__codelineno-0-238">238</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-182"><a id="__codelineno-0-182" name="__codelineno-0-182"></a><span class="k">class</span> <span class="nc">NmapRun</span><span class="p">(</span><span class="n">BaseXmlModel</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;nmaprun&quot;</span><span class="p">,</span> <span class="n">search_mode</span><span class="o">=</span><span class="s2">&quot;ordered&quot;</span><span class="p">):</span>
-</span><span id="__span-0-183"><a id="__codelineno-0-183" name="__codelineno-0-183"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184"></a><span class="sd">    This is the data model that maps with the Nmap (also Masscan) XML output.</span>
-</span><span id="__span-0-185"><a id="__codelineno-0-185" name="__codelineno-0-185"></a><span class="sd">    Refer to https://nmap.org/book/nmap-dtd.html for details.</span>
-</span><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187"></a>
-</span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188"></a>    <span class="k">class</span> <span class="nc">Stats</span><span class="p">(</span><span class="n">BaseXmlModel</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;runstats&quot;</span><span class="p">):</span>
-</span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189"></a>        <span class="n">finished</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">()</span>
-</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a>        <span class="n">hosts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">()</span>
-</span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191"></a>
-</span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192"></a>    <span class="n">scanner</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;nmap&quot;</span><span class="p">,</span> <span class="s2">&quot;masscan&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="p">()</span>
-</span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193"></a>    <span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-0-194"><a id="__codelineno-0-194" name="__codelineno-0-194"></a>    <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-0-195"><a id="__codelineno-0-195" name="__codelineno-0-195"></a>    <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;startstr&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196"></a>    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="p">()</span>
-</span><span id="__span-0-197"><a id="__codelineno-0-197" name="__codelineno-0-197"></a>    <span class="n">xmloutputversion</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="p">()</span>
-</span><span id="__span-0-198"><a id="__codelineno-0-198" name="__codelineno-0-198"></a>
-</span><span id="__span-0-199"><a id="__codelineno-0-199" name="__codelineno-0-199"></a>    <span class="c1"># https://seclists.org/nmap-dev/2005/q1/77</span>
-</span><span id="__span-0-200"><a id="__codelineno-0-200" name="__codelineno-0-200"></a>    <span class="n">scaninfo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ScanInfo</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-0-201"><a id="__codelineno-0-201" name="__codelineno-0-201"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">element</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># None for masscan</span>
-</span><span id="__span-0-202"><a id="__codelineno-0-202" name="__codelineno-0-202"></a>    <span class="n">debugging</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">element</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># None for masscan</span>
-</span><span id="__span-0-203"><a id="__codelineno-0-203" name="__codelineno-0-203"></a>    <span class="n">hosthint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HostHint</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-0-204"><a id="__codelineno-0-204" name="__codelineno-0-204"></a>    <span class="n">taskprogress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">TaskProgress</span><span class="p">]]</span> <span class="o">=</span> <span class="n">element</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-0-205"><a id="__codelineno-0-205" name="__codelineno-0-205"></a>    <span class="n">hosts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Host</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[])</span>
-</span><span id="__span-0-206"><a id="__codelineno-0-206" name="__codelineno-0-206"></a>    <span class="n">stats</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Stats</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-0-207"><a id="__codelineno-0-207" name="__codelineno-0-207"></a>
-</span><span id="__span-0-208"><a id="__codelineno-0-208" name="__codelineno-0-208"></a>    <span class="k">def</span> <span class="nf">to_html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xslt_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https://nmap.org/svn/docs/nmap.xsl&quot;</span><span class="p">,</span> <span class="n">pretty_print</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="__span-0-209"><a id="__codelineno-0-209" name="__codelineno-0-209"></a>        <span class="c1"># https://stackoverflow.com/a/34035675</span>
-</span><span id="__span-0-210"><a id="__codelineno-0-210" name="__codelineno-0-210"></a>        <span class="n">xslt</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">xslt_path</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span> <span class="k">if</span> <span class="n">xslt_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;https://&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xslt_path</span><span class="p">)</span>
-</span><span id="__span-0-211"><a id="__codelineno-0-211" name="__codelineno-0-211"></a>        <span class="n">transform</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">XSLT</span><span class="p">(</span><span class="n">xslt</span><span class="p">)</span>
-</span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212"></a>        <span class="n">newdom</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_xml_tree</span><span class="p">())</span>  <span class="c1"># type: ignore</span>
-</span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213"></a>        <span class="k">return</span> <span class="n">ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">newdom</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="n">pretty_print</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
-</span><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a>
-</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a>    <span class="k">def</span> <span class="nf">to_csv_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">BufferedWriter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216"></a>        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
-</span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217"></a>        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">&quot;IP&quot;</span><span class="p">,</span> <span class="s2">&quot;Port&quot;</span><span class="p">,</span> <span class="s2">&quot;Protocol&quot;</span><span class="p">,</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span> <span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="s2">&quot;Reason&quot;</span><span class="p">,</span> <span class="s2">&quot;Product&quot;</span><span class="p">,</span> <span class="s2">&quot;Version&quot;</span><span class="p">,</span> <span class="s2">&quot;CPE&quot;</span><span class="p">])</span>
-</span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218"></a>        <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span><span class="p">:</span>
-</span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219"></a>            <span class="n">host_info</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">address</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span>
-</span><span id="__span-0-220"><a id="__codelineno-0-220" name="__codelineno-0-220"></a>            <span class="k">if</span> <span class="n">host</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-221"><a id="__codelineno-0-221" name="__codelineno-0-221"></a>                <span class="n">host_info</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="n">host</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">)&quot;</span>
-</span><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222"></a>            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="n">host_info</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">])</span>
-</span><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223"></a>
-</span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224"></a>            <span class="k">if</span> <span class="n">host</span><span class="o">.</span><span class="n">ports</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">host</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">ports</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225"></a>                <span class="k">continue</span>
-</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226"></a>
-</span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227"></a>            <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">host</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">ports</span><span class="p">:</span>
-</span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228"></a>                <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span>
-</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229"></a>                    <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230"></a>                    <span class="nb">str</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">portid</span><span class="p">),</span>
-</span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231"></a>                    <span class="n">port</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span>
-</span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232"></a>                    <span class="n">port</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
-</span><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233"></a>                    <span class="n">port</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">port</span><span class="o">.</span><span class="n">service</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-234"><a id="__codelineno-0-234" name="__codelineno-0-234"></a>                    <span class="n">port</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
-</span><span id="__span-0-235"><a id="__codelineno-0-235" name="__codelineno-0-235"></a>                    <span class="n">port</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">product</span> <span class="k">if</span> <span class="n">port</span><span class="o">.</span><span class="n">service</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236"></a>                    <span class="n">port</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">version</span> <span class="k">if</span> <span class="n">port</span><span class="o">.</span><span class="n">service</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-237"><a id="__codelineno-0-237" name="__codelineno-0-237"></a>                    <span class="nb">str</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">cpe</span><span class="p">)</span> <span class="k">if</span> <span class="n">port</span><span class="o">.</span><span class="n">service</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-238"><a id="__codelineno-0-238" name="__codelineno-0-238"></a>                <span class="p">])</span>
-</span></code></pre></div></td></tr></table></div>
-              </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
+<h1 id="nmaprun">NmapRun</h1>
+<p>With the NmapRun model, you can parse Nmap’s XML output into Python objects (thanks to <a href="https://github.com/dapper91/pydantic-xml">pydantic-xml</a>), making it super convenient to handle scan results in Python code. You can access attributes, validate types, convert to JSON, CSV, or HTML (using XSLT), and more!</p>
+<p>The structure and data types of the NmapRun model align as closely as possible with <a href="https://nmap.org/book/nmap-dtd.html">Nmap's document type definition (DTD)</a>.</p>
+<p>Returns an NmapRun object after the scan is complete:</p>
+<div class="language-ipython highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">nmass</span> <span class="kn">import</span> <span class="n">Nmap</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">result</span> <span class="o">=</span> <span class="n">Nmap</span><span class="p">()</span><span class="o">.</span><span class="n">with_targets</span><span class="p">(</span><span class="s2">&quot;172.20.0.2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">with_ports</span><span class="p">(</span><span class="mi">9200</span><span class="p">,</span><span class="mi">9300</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">result</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">NmapRun</span><span class="p">(</span><span class="n">scanner</span><span class="o">=</span><span class="s1">&#39;nmap&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="s1">&#39;/usr/bin/nmap -oX - -vvv --noninteractive -p 9200,9300 172.20.0.2&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1730376449</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="s1">&#39;Thu Oct 31 20:07:29 2024&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;7.95&#39;</span><span class="p">,</span> <span class="n">xmloutputversion</span><span class="o">=</span><span class="s1">&#39;1.05&#39;</span><span class="p">,</span> <span class="n">scaninfo</span><span class="o">=</span><span class="n">ScanInfo</span><span class="p">(</span><span class="nb">type</span><span class="o">=&lt;</span><span class="n">ScanType</span><span class="o">.</span><span class="n">connect</span><span class="p">:</span> <span class="s1">&#39;connect&#39;</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=&lt;</span><span class="n">PortProtocol</span><span class="o">.</span><span class="n">tcp</span><span class="p">:</span> <span class="s1">&#39;tcp&#39;</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">numservices</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">services</span><span class="o">=</span><span class="s1">&#39;9200,9300&#39;</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="n">debugging</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">hosthint</span><span class="o">=</span><span class="n">HostHint</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">Status</span><span class="p">(</span><span class="n">state</span><span class="o">=&lt;</span><span class="n">HostState</span><span class="o">.</span><span class="n">up</span><span class="p">:</span> <span class="s1">&#39;up&#39;</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;unknown-response&#39;</span><span class="p">,</span> <span class="n">reason_ttl</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">),</span> <span class="n">address</span><span class="o">=</span><span class="p">[</span><span class="n">Address</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;172.20.0.2&#39;</span><span class="p">,</span> <span class="n">addrtype</span><span class="o">=</span><span class="s1">&#39;ipv4&#39;</span><span class="p">)],</span> <span class="n">hostnames</span><span class="o">=</span><span class="p">[]),</span> <span class="n">taskprogress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hosts</span><span class="o">=</span><span class="p">[</span><span class="n">Host</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">Status</span><span class="p">(</span><span class="n">state</span><span class="o">=&lt;</span><span class="n">HostState</span><span class="o">.</span><span class="n">up</span><span class="p">:</span> <span class="s1">&#39;up&#39;</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;conn-refused&#39;</span><span class="p">,</span> <span class="n">reason_ttl</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">),</span> <span class="n">address</span><span class="o">=</span><span class="p">[</span><span class="n">Address</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;172.20.0.2&#39;</span><span class="p">,</span> <span class="n">addrtype</span><span class="o">=</span><span class="s1">&#39;ipv4&#39;</span><span class="p">)],</span> <span class="n">hostnames</span><span class="o">=</span><span class="p">[],</span> <span class="n">ports</span><span class="o">=</span><span class="n">Ports</span><span class="p">(</span><span class="n">extraports</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ports</span><span class="o">=</span><span class="p">[</span><span class="n">Port</span><span class="p">(</span><span class="n">protocol</span><span class="o">=&lt;</span><span class="n">PortProtocol</span><span class="o">.</span><span class="n">tcp</span><span class="p">:</span> <span class="s1">&#39;tcp&#39;</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">portid</span><span class="o">=</span><span class="mi">9200</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">State</span><span class="p">(</span><span class="n">state</span><span class="o">=&lt;</span><span class="n">PortState</span><span class="o">.</span><span class="n">open</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;syn-ack&#39;</span><span class="p">,</span> <span class="n">reason_ttl</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">),</span> <span class="n">service</span><span class="o">=</span><span class="n">Service</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;wap-wsp&#39;</span><span class="p">,</span> <span class="n">banner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cpe</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span> <span class="n">scripts</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span> <span class="n">Port</span><span class="p">(</span><span class="n">protocol</span><span class="o">=&lt;</span><span class="n">PortProtocol</span><span class="o">.</span><span class="n">tcp</span><span class="p">:</span> <span class="s1">&#39;tcp&#39;</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">portid</span><span class="o">=</span><span class="mi">9300</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">State</span><span class="p">(</span><span class="n">state</span><span class="o">=&lt;</span><span class="n">PortState</span><span class="o">.</span><span class="n">open</span><span class="p">:</span> <span class="s1">&#39;open&#39;</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;syn-ack&#39;</span><span class="p">,</span> <span class="n">reason_ttl</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">),</span> <span class="n">service</span><span class="o">=</span><span class="n">Service</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;vrace&#39;</span><span class="p">,</span> <span class="n">banner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cpe</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span> <span class="n">scripts</span><span class="o">=</span><span class="kc">None</span><span class="p">)]),</span> <span class="n">os</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uptime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tcpsequence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ipidsequence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tcptssequence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;srtt&#39;</span><span class="p">:</span> <span class="mi">89</span><span class="p">,</span> <span class="s1">&#39;rttvar&#39;</span><span class="p">:</span> <span class="mi">2829</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">:</span> <span class="mi">100000</span><span class="p">})],</span> <span class="n">stats</span><span class="o">=</span><span class="n">Stats</span><span class="p">(</span><span class="n">finished</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;1730376449&#39;</span><span class="p">,</span> <span class="s1">&#39;timestr&#39;</span><span class="p">:</span> <span class="s1">&#39;Thu Oct 31 20:07:29 2024&#39;</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="s1">&#39;Nmap done at Thu Oct 31 20:07:29 2024; 1 IP address (1 host up) scanned in 0.04 seconds&#39;</span><span class="p">,</span> <span class="s1">&#39;elapsed&#39;</span><span class="p">:</span> <span class="s1">&#39;0.04&#39;</span><span class="p">,</span> <span class="s1">&#39;exit&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">},</span> <span class="n">hosts</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;up&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;down&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}))</span>
+</span></code></pre></div>
+<p>With the awesome <a href="https://github.com/pydantic/pydantic">pydantic</a> package, you can easily convert the result to JSON.</p>
+<div class="language-ipython highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">result</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">()</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="s1">&#39;{&quot;scanner&quot;:&quot;nmap&quot;,&quot;args&quot;:&quot;/usr/bin/nmap -oX - -vvv --noninteractive -p 9200,9300 172.20.0.2&quot;,&quot;start&quot;:1730376449,&quot;start_time&quot;:&quot;Thu Oct 31 20:07:29 2024&quot;,&quot;version&quot;:&quot;7.95&quot;,&quot;xmloutputversion&quot;:&quot;1.05&quot;,&quot;scaninfo&quot;:{&quot;type&quot;:&quot;connect&quot;,&quot;protocol&quot;:&quot;tcp&quot;,&quot;numservices&quot;:2,&quot;services&quot;:&quot;9200,9300&quot;},&quot;verbose&quot;:{&quot;level&quot;:3},&quot;debugging&quot;:{&quot;level&quot;:0},&quot;hosthint&quot;:{&quot;status&quot;:{&quot;state&quot;:&quot;up&quot;,&quot;reason&quot;:&quot;unknown-response&quot;,&quot;reason_ttl&quot;:&quot;0&quot;},&quot;address&quot;:[{&quot;addr&quot;:&quot;172.20.0.2&quot;,&quot;addrtype&quot;:&quot;ipv4&quot;}],&quot;hostnames&quot;:[]},&quot;taskprogress&quot;:null,&quot;hosts&quot;:[{&quot;status&quot;:{&quot;state&quot;:&quot;up&quot;,&quot;reason&quot;:&quot;conn-refused&quot;,&quot;reason_ttl&quot;:&quot;0&quot;},&quot;address&quot;:[{&quot;addr&quot;:&quot;172.20.0.2&quot;,&quot;addrtype&quot;:&quot;ipv4&quot;}],&quot;hostnames&quot;:[],&quot;ports&quot;:{&quot;extraports&quot;:null,&quot;ports&quot;:[{&quot;protocol&quot;:&quot;tcp&quot;,&quot;portid&quot;:9200,&quot;state&quot;:{&quot;state&quot;:&quot;open&quot;,&quot;reason&quot;:&quot;syn-ack&quot;,&quot;reason_ttl&quot;:&quot;0&quot;},&quot;service&quot;:{&quot;name&quot;:&quot;wap-wsp&quot;,&quot;banner&quot;:null,&quot;product&quot;:null,&quot;version&quot;:null,&quot;method&quot;:&quot;table&quot;,&quot;confidence&quot;:3,&quot;cpe&quot;:null},&quot;scripts&quot;:null},{&quot;protocol&quot;:&quot;tcp&quot;,&quot;portid&quot;:9300,&quot;state&quot;:{&quot;state&quot;:&quot;open&quot;,&quot;reason&quot;:&quot;syn-ack&quot;,&quot;reason_ttl&quot;:&quot;0&quot;},&quot;service&quot;:{&quot;name&quot;:&quot;vrace&quot;,&quot;banner&quot;:null,&quot;product&quot;:null,&quot;version&quot;:null,&quot;method&quot;:&quot;table&quot;,&quot;confidence&quot;:3,&quot;cpe&quot;:null},&quot;scripts&quot;:null}]},&quot;os&quot;:null,&quot;uptime&quot;:null,&quot;distance&quot;:null,&quot;tcpsequence&quot;:null,&quot;ipidsequence&quot;:null,&quot;tcptssequence&quot;:null,&quot;trace&quot;:null,&quot;times&quot;:{&quot;srtt&quot;:89,&quot;rttvar&quot;:2829,&quot;to&quot;:100000}}],&quot;stats&quot;:{&quot;finished&quot;:{&quot;time&quot;:&quot;1730376449&quot;,&quot;timestr&quot;:&quot;Thu Oct 31 20:07:29 2024&quot;,&quot;summary&quot;:&quot;Nmap done at Thu Oct 31 20:07:29 2024; 1 IP address (1 host up) scanned in 0.04 seconds&quot;,&quot;elapsed&quot;:&quot;0.04&quot;,&quot;exit&quot;:&quot;success&quot;},&quot;hosts&quot;:{&quot;up&quot;:1,&quot;down&quot;:0,&quot;total&quot;:1}}}&#39;</span>
+</span></code></pre></div>
+<p>Want to convert the result into a nice HTML file? Easy!</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/tmp/nmap.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">html_code</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">xslt_path</span><span class="o">=</span><span class="s2">&quot;https://raw.githubusercontent.com/Haxxnet/nmap-bootstrap-xsl/main/nmap-bootstrap.xsl&quot;</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html_code</span><span class="p">)</span>
+</span></code></pre></div>
+<p><img alt="nmap.html" src="../screenshot.png" /></p>
 
 
 
