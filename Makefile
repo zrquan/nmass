@@ -5,7 +5,7 @@ install: ## Install the virtual environment and install the pre-commit hooks
 	@uv run pre-commit install
 
 .PHONY: check
-check: ## Run code quality tools.
+check: ## Run code quality tools
 	@echo "🚀 Checking lock file consistency with 'pyproject.toml'"
 	@uv lock --locked
 	@echo "🚀 Linting code: Running pre-commit"
@@ -16,13 +16,13 @@ check: ## Run code quality tools.
 	@uv run deptry .
 
 .PHONY: unit-test
-unit-test: ## Test the code with pytest
-	@echo "🚀 Testing code: Running pytest"
+unit-test: ## Test the code in tests/unit with pytest
+	@echo "🚀 Testing code: Running unit tests"
 	@uv run python -m pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
 
 .PHONY: integration-test
-integration-test: ## Test the code with pytest
-	@echo "🚀 Testing code: Running pytest"
+integration-test: ## Test the code in tests/integration with pytest
+	@echo "🚀 Testing code: Running integration tests"
 	@uv run python -m pytest tests/integration --cov --cov-config=pyproject.toml --cov-report=xml
 
 .PHONY: build
@@ -36,12 +36,12 @@ clean-build: ## Clean build artifacts
 	@uv run python -c "import shutil; import os; shutil.rmtree('dist') if os.path.exists('dist') else None"
 
 .PHONY: publish
-publish: ## Publish a release to PyPI.
-	@echo "🚀 Publishing."
+publish: ## Publish a release to PyPI
+	@echo "🚀 Publishing the package"
 	@uvx twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 
 .PHONY: build-and-publish
-build-and-publish: build publish ## Build and publish.
+build-and-publish: build publish ## Build and publish
 
 .PHONY: docs-test
 docs-test: ## Test if documentation can be built without warnings or errors
@@ -50,6 +50,11 @@ docs-test: ## Test if documentation can be built without warnings or errors
 .PHONY: docs
 docs: ## Build and serve the documentation
 	@uv run mkdocs serve
+
+.PHONY: docs-deploy
+docs-deploy: ## Build and publish to GitHub
+	@echo "🚀 Deploying the GitHub page"
+	@uv run mkdocs gh-deploy --force
 
 .PHONY: help
 help:
