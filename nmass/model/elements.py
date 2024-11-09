@@ -1,9 +1,11 @@
 import csv
+from datetime import datetime
 from io import BufferedWriter
 from typing import Literal, Optional, Union
 from urllib.request import urlopen
 
 import lxml.etree as ET
+from pydantic import field_validator
 from pydantic_xml import BaseXmlModel, RootXmlModel, attr, element, wrapped
 
 from .enums import HostState, PortProtocol, PortState, ScanType
@@ -151,6 +153,8 @@ class Host(BaseXmlModel, tag="host"):
         reason: str = attr()
         reason_ttl: Optional[str] = attr(default=None)
 
+    starttime: Optional[datetime] = attr(default=None)
+    endtime: Optional[datetime] = attr(default=None)
     status: Optional[Status] = element(default=None)  # None for masscan
     address: list[Address]
     hostnames: list[Hostname] = wrapped("hostnames", element(tag="hostname", default=[]))  # type: ignore
@@ -164,6 +168,10 @@ class Host(BaseXmlModel, tag="host"):
     trace: Optional[Trace] = element(default=None)
     times: Optional[dict[str, int]] = element(default=None)
 
+    @field_validator("starttime", "endtime", mode="before")
+    def decode_timestamp(cls, value: Optional[str]) -> Optional[datetime]:
+        return datetime.fromtimestamp(int(value)) if value else None
+
 
 class HostHint(BaseXmlModel, tag="hosthint"):
     status: Host.Status = element()
@@ -173,10 +181,14 @@ class HostHint(BaseXmlModel, tag="hosthint"):
 
 class TaskProgress(BaseXmlModel, tag="taskprogress"):
     task: str = attr()
-    time: str = attr()
+    time: datetime = attr()
     percent: float = attr()
     remaining: Optional[int] = attr(default=None)
     etc: Optional[str] = attr(default=None)
+
+    @field_validator("time", mode="before")
+    def decode_timestamp(cls, value: str) -> datetime:
+        return datetime.fromtimestamp(int(value))
 
 
 class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
@@ -192,9 +204,13 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
     scanner: Literal["nmap", "masscan"] = attr()
     args: Optional[str] = attr(default=None)
     start: Optional[int] = attr(default=None)
-    start_time: Optional[str] = attr(name="startstr", default=None)
+    start_time: Optional[datetime] = attr(name="startstr", default=None)
     version: str = attr()
     xmloutputversion: str = attr()
+
+    @field_validator("start_time", mode="before")
+    def decode_timestr(cls, value: Optional[str]) -> Optional[datetime]:
+        return datetime.strptime(value, "%a %b %d %H:%M:%S %Y") if value else None
 
     # https://seclists.org/nmap-dev/2005/q1/77
     scaninfo: Optional[ScanInfo] = element(default=None)
