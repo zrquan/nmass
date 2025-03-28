@@ -1,6 +1,6 @@
 [project]
 name = "nmass"
-version = "0.2.0"
+version = "0.2.0-1"
 description = "A python3 library that makes it easier to use nmap and masscan."
 authors = [{ name = "4shen0ne", email = "4shen.01@gmail.com" }]
 readme = "README.md"
@@ -46,8 +46,8 @@ dev-dependencies = [
 ]
 
 [build-system]
-requires = ["setuptools >= 61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.setuptools]
 py-modules = ["nmass"]
