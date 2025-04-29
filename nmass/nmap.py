@@ -3,7 +3,6 @@ import logging
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 from pydantic import BaseModel
 from typing_extensions import Self, Unpack
@@ -55,9 +54,9 @@ class Nmap(Scanner):
 
     def run(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         **kwargs: Unpack[ProcessArgs],
-    ) -> Optional[NmapRun]:
+    ) -> NmapRun | None:
         """Run nmap command.
 
         :param timeout: Timeout for nmap process, defaults to None
@@ -73,9 +72,9 @@ class Nmap(Scanner):
 
     async def arun(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         **kwargs: Unpack[ProcessArgs],
-    ) -> Optional[NmapRun]:
+    ) -> NmapRun | None:
         """Run nmap command asynchronously.
 
         :param timeout: Timeout for nmap process, defaults to None
@@ -507,8 +506,8 @@ class Nmap(Scanner):
 
     def with_hostgroup_size(
         self,
-        min: Optional[int] = None,
-        max: Optional[int] = None,
+        min: int | None = None,
+        max: int | None = None,
     ) -> Self:
         """Parallel host scan group sizes (--min-hostgroup, --max-hostgroup).
 
@@ -526,8 +525,8 @@ class Nmap(Scanner):
 
     def with_parallelism(
         self,
-        min: Optional[int] = None,
-        max: Optional[int] = None,
+        min: int | None = None,
+        max: int | None = None,
     ) -> Self:
         """Probe parallelization (--min-parallelism, --max-parallelism).
 
@@ -548,9 +547,9 @@ class Nmap(Scanner):
 
     def with_rtt_timeout(
         self,
-        min: Optional[int] = None,
-        max: Optional[int] = None,
-        initial: Optional[int] = None,
+        min: int | None = None,
+        max: int | None = None,
+        initial: int | None = None,
     ) -> Self:
         """Specifies probe round trip time (--min-rtt-timeout, --max-rtt-timeout, --initial-rtt-timeout).
 
@@ -587,8 +586,8 @@ class Nmap(Scanner):
 
     def with_scan_delay(
         self,
-        time: Optional[int] = None,
-        max_time: Optional[int] = None,
+        time: int | None = None,
+        max_time: int | None = None,
     ) -> Self:
         """Adjust delay between probes (--scan-delay, --max-scan-delay).
 
@@ -606,8 +605,8 @@ class Nmap(Scanner):
 
     def with_rate(
         self,
-        min: Optional[int] = None,
-        max: Optional[int] = None,
+        min: int | None = None,
+        max: int | None = None,
     ) -> Self:
         """Send packets no slower/faster than min/max per second (--min-rate, --max-rate).
 

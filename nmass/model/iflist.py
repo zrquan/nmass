@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Union
+from typing import Literal
 
 from pydantic import BaseModel, IPvAnyAddress
 
@@ -6,12 +6,12 @@ from pydantic import BaseModel, IPvAnyAddress
 class Interface(BaseModel):
     device: str
     short: str
-    ip: Union[IPvAnyAddress, Literal["(none)"]]
+    ip: IPvAnyAddress | Literal["(none)"]
     ip_mask: int
     type_: str
     is_up: bool
     mtu: int
-    mac: Optional[str] = None
+    mac: str | None = None
 
 
 class Route(BaseModel):
@@ -19,7 +19,7 @@ class Route(BaseModel):
     dest_ip_mask: int
     device: str
     metric: int
-    gateway: Optional[IPvAnyAddress] = None
+    gateway: IPvAnyAddress | None = None
 
 
 class InterfaceList(BaseModel):

@@ -4,7 +4,6 @@ import shutil
 import socket
 import string
 import subprocess
-from typing import Optional
 
 from pydantic import BaseModel
 from typing_extensions import Self, Unpack
@@ -54,9 +53,9 @@ class Masscan(Scanner):
     @as_root
     def run(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         **kwargs: Unpack[ProcessArgs],
-    ) -> Optional[NmapRun]:
+    ) -> NmapRun | None:
         """Run masscan command.
 
         :param timeout: Timeout for masscan process, defaults to None
@@ -73,9 +72,9 @@ class Masscan(Scanner):
     @as_root
     async def arun(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         **kwargs: Unpack[ProcessArgs],
-    ) -> Optional[NmapRun]:
+    ) -> NmapRun | None:
         """Run masscan command asynchronously.
 
         :param timeout: Timeout for masscan process, defaults to None

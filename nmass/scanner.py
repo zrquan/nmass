@@ -4,7 +4,7 @@ import os
 import subprocess
 from abc import abstractmethod
 from collections.abc import Callable
-from typing import Any, Optional, TypedDict, Union
+from typing import Any, TypedDict
 
 from typing_extensions import Self, Unpack
 
@@ -15,7 +15,7 @@ from .utils import validate_target
 class ProcessArgs(TypedDict, total=False):
     preexec_fn: Any
     close_fds: bool
-    cwd: Union[str, bytes, os.PathLike]
+    cwd: str | bytes | os.PathLike
     env: dict[str, str]
     restore_signals: bool
     start_new_session: bool
@@ -34,10 +34,10 @@ class Scanner:
         return f"<{self.__class__.__name__} [{self.bin_path} {' '.join(self._args)}]>"
 
     @abstractmethod
-    def run(self, timeout: Optional[float], **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
+    def run(self, timeout: float | None, **kwargs: Unpack[ProcessArgs]) -> NmapRun | None:
         raise NotImplementedError()
 
-    def _run_command(self, timeout: Optional[float], **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
+    def _run_command(self, timeout: float | None, **kwargs: Unpack[ProcessArgs]) -> NmapRun | None:
         cmd = [self.bin_path, *self._args]
         try:
             # masscan 使用 stderr 来输出扫描状态
@@ -62,10 +62,10 @@ class Scanner:
         return None
 
     @abstractmethod
-    async def arun(self, timeout: Optional[float], **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
+    async def arun(self, timeout: float | None, **kwargs: Unpack[ProcessArgs]) -> NmapRun | None:
         raise NotImplementedError()
 
-    async def _arun_command(self, timeout: Optional[float], **kwargs: Unpack[ProcessArgs]) -> Optional[NmapRun]:
+    async def _arun_command(self, timeout: float | None, **kwargs: Unpack[ProcessArgs]) -> NmapRun | None:
         proc = await asyncio.create_subprocess_exec(
             self.bin_path,
             *self._args,
@@ -109,7 +109,7 @@ class Scanner:
         self._args.extend(targets)
         return self
 
-    def with_ports(self, *ports: Union[int, str]) -> Self:
+    def with_ports(self, *ports: int | str) -> Self:
         if not ports:
             raise ValueError("At least one port must be provided.")
 

@@ -1,7 +1,7 @@
 import csv
 from datetime import datetime
 from io import BufferedWriter
-from typing import Literal, Optional, Union
+from typing import Literal
 from urllib.request import urlopen
 
 import lxml.etree as ET
@@ -59,18 +59,18 @@ class CPE(RootXmlModel[str]):
 class ScanInfo(BaseXmlModel, tag="scaninfo"):
     type: ScanType = attr()
     protocol: PortProtocol = attr()
-    numservices: Optional[int] = attr(default=None)
-    services: Optional[str] = attr(default=None)
+    numservices: int | None = attr(default=None)
+    services: str | None = attr(default=None)
 
 
 class Service(BaseXmlModel, tag="service"):
     name: str = attr()
-    banner: Optional[str] = attr(default=None)  # for masscan
-    product: Optional[str] = attr(default=None)
-    version: Optional[str] = attr(default=None)
-    method: Optional[Literal["table", "probed"]] = attr(default=None)
-    confidence: Optional[int] = attr(name="conf", default=None)
-    cpe: Optional[CPE] = element(default=None)
+    banner: str | None = attr(default=None)  # for masscan
+    product: str | None = attr(default=None)
+    version: str | None = attr(default=None)
+    method: Literal["table", "probed"] | None = attr(default=None)
+    confidence: int | None = attr(name="conf", default=None)
+    cpe: CPE | None = element(default=None)
 
 
 class Script(BaseXmlModel, tag="script"):
@@ -87,8 +87,8 @@ class Port(BaseXmlModel, tag="port"):
     protocol: PortProtocol = attr()
     portid: int = attr()
     state: State
-    service: Optional[Service] = element(default=None)
-    scripts: Optional[list[Script]] = element(default=None)
+    service: Service | None = element(default=None)
+    scripts: list[Script] | None = element(default=None)
 
 
 class PortUsed(BaseXmlModel, tag="portused"):
@@ -108,8 +108,8 @@ class ExtraPorts(BaseXmlModel, tag="extraports"):
 
 
 class Ports(BaseXmlModel, tag="ports"):
-    extraports: Optional[ExtraPorts] = element(default=None)
-    ports: Optional[list[Port]] = element(default=None)
+    extraports: ExtraPorts | None = element(default=None)
+    ports: list[Port] | None = element(default=None)
 
 
 class Hostname(BaseXmlModel, tag="hostname"):
@@ -123,7 +123,7 @@ class OSClass(BaseXmlModel, tag="osclass"):
     osfamily: str = attr()
     osgen: str = attr(default="")
     accuracy: int = attr()
-    cpe: Optional[CPE] = element(default=None)
+    cpe: CPE | None = element(default=None)
 
 
 class OSMatch(BaseXmlModel, tag="osmatch"):
@@ -134,8 +134,8 @@ class OSMatch(BaseXmlModel, tag="osmatch"):
 
 
 class OS(BaseXmlModel, tag="os"):
-    used_ports: Optional[list[PortUsed]] = element(default=None)
-    osmatches: Optional[list[OSMatch]] = element(default=None)
+    used_ports: list[PortUsed] | None = element(default=None)
+    osmatches: list[OSMatch] | None = element(default=None)
 
 
 class Trace(BaseXmlModel, tag="trace"):
@@ -151,40 +151,40 @@ class Host(BaseXmlModel, tag="host"):
     class Status(BaseXmlModel, tag="status"):
         state: HostState = attr()
         reason: str = attr()
-        reason_ttl: Optional[str] = attr(default=None)
+        reason_ttl: str | None = attr(default=None)
 
-    starttime: Optional[datetime] = attr(default=None)
-    endtime: Optional[datetime] = attr(default=None)
-    status: Optional[Status] = element(default=None)  # None for masscan
+    starttime: datetime | None = attr(default=None)
+    endtime: datetime | None = attr(default=None)
+    status: Status | None = element(default=None)  # None for masscan
     address: list[Address]
-    hostnames: list[Hostname] = wrapped("hostnames", element(tag="hostname", default=[]))  # type: ignore
-    ports: Optional[Ports] = element(default=None)
-    os: Optional[OS] = element(default=None)
-    uptime: Optional[dict[str, str]] = element(default=None)
-    distance: Optional[dict[str, int]] = element(default=None)
-    tcpsequence: Optional[dict[str, str]] = element(default=None)
-    ipidsequence: Optional[dict[str, str]] = element(default=None)
-    tcptssequence: Optional[dict[str, str]] = element(default=None)
-    trace: Optional[Trace] = element(default=None)
-    times: Optional[dict[str, int]] = element(default=None)
+    hostnames: list[Hostname] = wrapped("hostnames", element(tag="hostname", default=[]))
+    ports: Ports | None = element(default=None)
+    os: OS | None = element(default=None)
+    uptime: dict[str, str] | None = element(default=None)
+    distance: dict[str, int] | None = element(default=None)
+    tcpsequence: dict[str, str] | None = element(default=None)
+    ipidsequence: dict[str, str] | None = element(default=None)
+    tcptssequence: dict[str, str] | None = element(default=None)
+    trace: Trace | None = element(default=None)
+    times: dict[str, int] | None = element(default=None)
 
     @field_validator("starttime", "endtime", mode="before")
-    def decode_timestamp(cls, value: Optional[str]) -> Optional[datetime]:
+    def decode_timestamp(cls, value: str | None) -> datetime | None:
         return datetime.fromtimestamp(int(value)) if value else None
 
 
 class HostHint(BaseXmlModel, tag="hosthint"):
     status: Host.Status = element()
     address: list[Address]
-    hostnames: list[Hostname] = wrapped("hostnames", element(tag="hostname", default=[]))  # type: ignore
+    hostnames: list[Hostname] = wrapped("hostnames", element(tag="hostname", default=[]))
 
 
 class TaskProgress(BaseXmlModel, tag="taskprogress"):
     task: str = attr()
     time: datetime = attr()
     percent: float = attr()
-    remaining: Optional[int] = attr(default=None)
-    etc: Optional[str] = attr(default=None)
+    remaining: int | None = attr(default=None)
+    etc: str | None = attr(default=None)
 
     @field_validator("time", mode="before")
     def decode_timestamp(cls, value: str) -> datetime:
@@ -202,24 +202,24 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
         hosts: dict[str, int] = element()
 
     scanner: Literal["nmap", "masscan"] = attr()
-    args: Optional[str] = attr(default=None)
-    start: Optional[int] = attr(default=None)
-    start_time: Optional[datetime] = attr(name="startstr", default=None)
+    args: str | None = attr(default=None)
+    start: int | None = attr(default=None)
+    start_time: datetime | None = attr(name="startstr", default=None)
     version: str = attr()
     xmloutputversion: str = attr()
 
     @field_validator("start_time", mode="before")
-    def decode_timestr(cls, value: Optional[str]) -> Optional[datetime]:
+    def decode_timestr(cls, value: str | None) -> datetime | None:
         return datetime.strptime(value, "%a %b %d %H:%M:%S %Y") if value else None
 
     # https://seclists.org/nmap-dev/2005/q1/77
-    scaninfo: Optional[ScanInfo] = element(default=None)
-    verbose: Optional[dict[str, int]] = element(default=None)  # None for masscan
-    debugging: Optional[dict[str, int]] = element(default=None)  # None for masscan
-    hosthint: Optional[HostHint] = element(default=None)
-    taskprogress: Optional[list[TaskProgress]] = element(default=None)
+    scaninfo: ScanInfo | None = element(default=None)
+    verbose: dict[str, int] | None = element(default=None)  # None for masscan
+    debugging: dict[str, int] | None = element(default=None)  # None for masscan
+    hosthint: HostHint | None = element(default=None)
+    taskprogress: list[TaskProgress] | None = element(default=None)
     hosts: list[Host] = element(default=[])
-    stats: Optional[Stats] = element(default=None)
+    stats: Stats | None = element(default=None)
 
     def to_html(self, xslt_path: str = "https://nmap.org/svn/docs/nmap.xsl", pretty_print: bool = False) -> str:
         # https://stackoverflow.com/a/34035675
@@ -228,7 +228,7 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
         newdom = transform(self.to_xml_tree())  # type: ignore
         return ET.tostring(newdom, pretty_print=pretty_print).decode()
 
-    def to_csv_file(self, file: BufferedWriter, dialect: Union[str, csv.Dialect] = "excel") -> None:
+    def to_csv_file(self, file: BufferedWriter, dialect: str | csv.Dialect = "excel") -> None:
         """Write information to a CSV file.
 
         :param file: A file-like object where the CSV data will be written
