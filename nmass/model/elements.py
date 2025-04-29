@@ -7,6 +7,7 @@ from urllib.request import urlopen
 import lxml.etree as ET
 from pydantic import field_validator
 from pydantic_xml import BaseXmlModel, RootXmlModel, attr, element, wrapped
+from typing_extensions import Self
 
 from .enums import HostState, PortProtocol, PortState, ScanType
 
@@ -59,23 +60,46 @@ class CPE(RootXmlModel[str]):
 class ScanInfo(BaseXmlModel, tag="scaninfo"):
     type: ScanType = attr()
     protocol: PortProtocol = attr()
-    numservices: int | None = attr(default=None)
-    services: str | None = attr(default=None)
+    numservices: int | None = attr(default=None)  # None in masscan
+    services: str | None = attr(default=None)  # None in masscan
+    scanflags: str | None = attr(default=None)
 
 
 class Service(BaseXmlModel, tag="service"):
     name: str = attr()
-    banner: str | None = attr(default=None)  # for masscan
+    banner: str | None = attr(default=None)  # masscan
     product: str | None = attr(default=None)
     version: str | None = attr(default=None)
     method: Literal["table", "probed"] | None = attr(default=None)
-    confidence: int | None = attr(name="conf", default=None)
+    confidence: int | None = attr(name="conf", default=None)  # None in masscan
+    extrainfo: str | None = attr(default=None)
+    tunnel: str | None = attr(default=None)
+    proto: str | None = attr(default=None)
+    rpcnum: int | None = attr(default=None)
+    lowver: int | None = attr(default=None)
+    highver: int | None = attr(default=None)
+    hostname: str | None = attr(default=None)
+    ostype: str | None = attr(default=None)
+    devicetype: str | None = attr(default=None)
+    servicefp: str | None = attr(default=None)
     cpe: CPE | None = element(default=None)
+
+
+class ScriptElement(BaseXmlModel, tag="elem"):
+    key: str | None = attr(default=None)
+    value: str
+
+
+class ScriptTable(BaseXmlModel, tag="table"):
+    key: str | None = attr(default=None)
+    items: list[Self | ScriptElement] = element()
 
 
 class Script(BaseXmlModel, tag="script"):
     id: str = attr()
     output: str = attr()
+    tables: list[ScriptTable] | None = element(default=None)
+    elements: list[ScriptElement] | None = element(default=None)
 
 
 class Port(BaseXmlModel, tag="port"):
@@ -83,10 +107,15 @@ class Port(BaseXmlModel, tag="port"):
         state: PortState = attr()
         reason: str = attr()
         reason_ttl: str = attr()
+        reason_ip: str | None = attr(default=None)
+
+    class Owner(BaseXmlModel, tag="owner"):
+        name: str = attr()
 
     protocol: PortProtocol = attr()
     portid: int = attr()
     state: State
+    owner: Owner | None = element(default=None)
     service: Service | None = element(default=None)
     scripts: list[Script] | None = element(default=None)
 
@@ -98,13 +127,15 @@ class PortUsed(BaseXmlModel, tag="portused"):
 
 
 class ExtraPorts(BaseXmlModel, tag="extraports"):
-    class ExtraReasons(BaseXmlModel, tag="extrareasons"):
+    class ExtraReason(BaseXmlModel, tag="extrareasons"):
         reason: str = attr()
         count: int = attr()
+        proto: PortProtocol | None = attr(default=None)
+        ports: str | None = attr(default=None)
 
     state: PortState = attr()
     count: int = attr()
-    reasons: ExtraReasons = element()
+    extrareasons: list[ExtraReason] = element()
 
 
 class Ports(BaseXmlModel, tag="ports"):
@@ -118,10 +149,10 @@ class Hostname(BaseXmlModel, tag="hostname"):
 
 
 class OSClass(BaseXmlModel, tag="osclass"):
-    type: str = attr(default="")
+    type: str | None = attr(default=None)
     vendor: str = attr()
     osfamily: str = attr()
-    osgen: str = attr(default="")
+    osgen: str | None = attr(default=None)
     accuracy: int = attr()
     cpe: CPE | None = element(default=None)
 
@@ -134,8 +165,16 @@ class OSMatch(BaseXmlModel, tag="osmatch"):
 
 
 class OS(BaseXmlModel, tag="os"):
+    class OSFingerprint(BaseXmlModel, tag="osfingerprint"):
+        fingerprint: str = attr()
+
     used_ports: list[PortUsed] | None = element(default=None)
     osmatches: list[OSMatch] | None = element(default=None)
+    osfingerprint: OSFingerprint | None = element(default=None)
+
+    @property
+    def fingerprint(self) -> str:
+        return self.osfingerprint.fingerprint
 
 
 class Trace(BaseXmlModel, tag="trace"):
@@ -145,18 +184,21 @@ class Trace(BaseXmlModel, tag="trace"):
 class Address(BaseXmlModel, tag="address"):
     addr: str = attr()
     addrtype: Literal["ipv4", "ipv6", "mac"] = attr()
+    vendor: str | None = attr(default=None)
 
 
 class Host(BaseXmlModel, tag="host"):
     class Status(BaseXmlModel, tag="status"):
         state: HostState = attr()
         reason: str = attr()
-        reason_ttl: str | None = attr(default=None)
+        reason_ttl: int | None = attr(default=None)
 
     starttime: datetime | None = attr(default=None)
     endtime: datetime | None = attr(default=None)
-    status: Status | None = element(default=None)  # None for masscan
-    address: list[Address]
+    timeout: bool | None = attr(default=None)
+    comment: str | None = attr(default=None)
+    status: Status | None = element(default=None)  # None in masscan
+    addresses: list[Address]
     hostnames: list[Hostname] = wrapped("hostnames", element(tag="hostname", default=[]))
     ports: Ports | None = element(default=None)
     os: OS | None = element(default=None)
@@ -206,6 +248,7 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
     start: int | None = attr(default=None)
     start_time: datetime | None = attr(name="startstr", default=None)
     version: str = attr()
+    profile_name: str | None = attr(default=None)
     xmloutputversion: str = attr()
 
     @field_validator("start_time", mode="before")
@@ -213,9 +256,9 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
         return datetime.strptime(value, "%a %b %d %H:%M:%S %Y") if value else None
 
     # https://seclists.org/nmap-dev/2005/q1/77
-    scaninfo: ScanInfo | None = element(default=None)
-    verbose: dict[str, int] | None = element(default=None)  # None for masscan
-    debugging: dict[str, int] | None = element(default=None)  # None for masscan
+    scaninfo: list[ScanInfo] | None = element(default=None)
+    verbose: dict[str, int] | None = element(default=None)  # None in masscan
+    debugging: dict[str, int] | None = element(default=None)  # None in masscan
     hosthint: HostHint | None = element(default=None)
     taskprogress: list[TaskProgress] | None = element(default=None)
     hosts: list[Host] = element(default=[])
@@ -237,7 +280,7 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
         writer = csv.writer(file, dialect=dialect)  # type: ignore
         writer.writerow(["IP", "Port", "Protocol", "State", "Service", "Reason", "Product", "Version", "CPE"])
         for host in self.hosts:
-            host_info = host.address[0].addr
+            host_info = host.addresses[0].addr
             if host.status is not None:
                 host_info += f" ({host.status.state})"
             writer.writerow([host_info, "", "", "", "", "", "", "", ""])
