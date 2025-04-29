@@ -3,8 +3,9 @@ import logging
 import shutil
 import subprocess
 from pathlib import Path
-from typing import NamedTuple, Optional
+from typing import Optional
 
+from pydantic import BaseModel
 from typing_extensions import Self, Unpack
 
 from .errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
@@ -15,7 +16,7 @@ from .scanner import ProcessArgs, Scanner
 from .utils import as_root
 
 
-class NmapInfo(NamedTuple):
+class NmapInfo(BaseModel):
     version: str
     platform: str
     compiled_with: list[str]
@@ -45,11 +46,11 @@ class Nmap(Scanner):
             return line.decode().split(":")[1].strip()
 
         return NmapInfo(
-            info[0].decode().split(" ")[2],
-            clean(info[1]),
-            clean(info[2]).split(" "),
-            clean(info[3]).split(" "),
-            clean(info[4]).split(" "),
+            version=info[0].decode().split(" ")[2],
+            platform=clean(info[1]),
+            compiled_with=clean(info[2]).split(" "),
+            compiled_without=clean(info[3]).split(" "),
+            nsock_engines=clean(info[4]).split(" "),
         )
 
     def run(

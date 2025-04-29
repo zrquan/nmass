@@ -4,8 +4,9 @@ import shutil
 import socket
 import string
 import subprocess
-from typing import NamedTuple, Optional
+from typing import Optional
 
+from pydantic import BaseModel
 from typing_extensions import Self, Unpack
 
 from .errors import MasscanExecutionError, MasscanNotInstalledError
@@ -14,7 +15,7 @@ from .scanner import ProcessArgs, Scanner
 from .utils import as_root
 
 
-class MasscanInfo(NamedTuple):
+class MasscanInfo(BaseModel):
     version: str
     compiled_time: str
     compiler: str
@@ -42,12 +43,12 @@ class Masscan(Scanner):
             return line.decode().split(":")[1].strip()
 
         return MasscanInfo(
-            info[1].decode().split(" ")[2],
-            clean(info[2]),
-            clean(info[3]),
-            clean(info[4]),
-            clean(info[5]),
-            clean(info[6]),
+            version=info[1].decode().split(" ")[2],
+            compiled_time=clean(info[2]),
+            compiler=clean(info[3]),
+            os=clean(info[4]),
+            cpu=clean(info[5]),
+            git_version=clean(info[6]),
         )
 
     @as_root
@@ -127,6 +128,11 @@ class Masscan(Scanner):
                 origin = t
                 t = socket.gethostbyname(t)
                 logging.warning(f"Replace {origin} with {t} (masscan doesn't like DNS name)")
+
+            if t == "127.0.0.1":
+                logging.warning("Masscan uses a custom stack. It cannot scan the local host.")
+                continue
+
             parsed_targets.append(t)
         return super().with_targets(*parsed_targets)
 

@@ -9,7 +9,7 @@ Nmass is a python3 library that makes it easier for developers to use **nmap and
 
 ## Requirements
 
-Python 3.9+
+Python 3.10+
 
 ## Installation
 

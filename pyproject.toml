@@ -5,12 +5,11 @@ description = "A python3 library that makes it easier to use nmap and masscan."
 authors = [{ name = "4shen0ne", email = "4shen.01@gmail.com" }]
 readme = "README.md"
 keywords = ['python', 'nmap', 'masscan']
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.10,<4.0"
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -28,6 +27,11 @@ dependencies = [
 Homepage = "https://zrquan.github.io/nmass/"
 Repository = "https://github.com/zrquan/nmass"
 Documentation = "https://zrquan.github.io/nmass/"
+
+[project.optional-dependencies]
+mcp = [
+    "fastmcp>=2.2.5",
+]
 
 [tool.uv]
 dev-dependencies = [
