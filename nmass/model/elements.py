@@ -173,8 +173,8 @@ class OS(BaseXmlModel, tag="os"):
     osfingerprint: OSFingerprint | None = element(default=None)
 
     @property
-    def fingerprint(self) -> str:
-        return self.osfingerprint.fingerprint
+    def fingerprint(self) -> str | None:
+        return self.osfingerprint.fingerprint if self.osfingerprint else None
 
 
 class Trace(BaseXmlModel, tag="trace"):
