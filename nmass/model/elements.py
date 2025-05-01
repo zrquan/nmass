@@ -87,12 +87,12 @@ class Service(BaseXmlModel, tag="service"):
 
 class ScriptElement(BaseXmlModel, tag="elem"):
     key: str | None = attr(default=None)
-    value: str = element(default=None)
+    value: str = None
 
 
 class ScriptTable(BaseXmlModel, tag="table"):
     key: str | None = attr(default=None)
-    items: list[Self | ScriptElement] = element(default=[])
+    items: list[Self | ScriptElement] | None = element()
 
 
 class Script(BaseXmlModel, tag="script"):
