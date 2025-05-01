@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.92 scan initiated Thu May  1 13:37:04 2025 as: nmap -PN -sV -sC -&#45;open -p 80 -oA script 10.0.0.1 -->
+<nmaprun scanner="nmap" args="nmap -PN -sV -sC --open -p 80 -oA script 10.0.0.1" start="1746121024" startstr="Thu May  1 13:37:04 2025" version="7.92" xmloutputversion="1.05">
+  <scaninfo type="connect" protocol="tcp" numservices="1" services="80"/>
+  <verbose level="0"/>
+  <debugging level="0"/>
+  <taskprogress task="NSE" time="1746121024" percent="0.00"/>
+  <host starttime="1746121024" endtime="1746121048">
+    <status state="up" reason="user-set" reason_ttl="0"/>
+    <address addr="10.0.0.1" addrtype="ipv4"/>
+    <hostnames>
+      <hostname name="ip-10.0.0.1.us-west-2.compute.internal" type="PTR"/>
+    </hostnames>
+    <ports>
+      <port protocol="tcp" portid="80">
+        <state state="open" reason="syn-ack" reason_ttl="0"/>
+        <service name="http" product="Microsoft IIS httpd" version="8.5" ostype="Windows" method="probed" conf="10">
+          <cpe>cpe:/a:microsoft:internet_information_server:8.5</cpe>
+          <cpe>cpe:/o:microsoft:windows</cpe>
+        </service>
+        <script id="http-title" output="Site doesn't have a title (text/plain; charset=utf-8)."/>
+        <script id="http-auth" output="&#10;HTTP/1.1 401 Unauthorized&#13;&#10;  NTLM&#10;">
+          <table>
+            <table key="params">
+</table>
+            <elem key="scheme">NTLM</elem>
+          </table>
+        </script>
+        <script id="http-ntlm-info" output="&#10;  Target_Name: DOMAIN&#10;  NetBIOS_Domain_Name: DOMAIN&#10;  NetBIOS_Computer_Name: SERVER&#10;  DNS_Domain_Name: DOMAIN.com&#10;  DNS_Computer_Name: SERVER.DOMAIN.com&#10;  DNS_Tree_Name: DOMAIN.com&#10;  Product_Version: 6.3.9600">
+          <elem key="Target_Name">DOMAIN</elem>
+          <elem key="NetBIOS_Domain_Name">DOMAIN</elem>
+          <elem key="NetBIOS_Computer_Name">SERVER</elem>
+          <elem key="DNS_Domain_Name">DOMAIN.com</elem>
+          <elem key="DNS_Computer_Name">SERVER.DOMAIN.com</elem>
+          <elem key="DNS_Tree_Name">DOMAIN.com</elem>
+          <elem key="Product_Version">6.3.9600</elem>
+        </script>
+        <script id="http-server-header" output="Microsoft-IIS/8.5">
+          <elem>Microsoft-IIS/8.5</elem>
+        </script>
+      </port>
+    </ports>
+    <times srtt="266139" rttvar="266139" to="1330695"/>
+  </host>
+  <runstats>
+    <finished time="1746121048" timestr="Thu May  1 13:37:28 2025" summary="Nmap done at Thu May  1 13:37:28 2025; 1 IP address (1 host up) scanned in 23.50 seconds" elapsed="23.50" exit="success"/>
+    <hosts up="1" down="0" total="1"/>
+  </runstats>
+</nmaprun>
