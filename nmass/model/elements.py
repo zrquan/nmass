@@ -98,8 +98,8 @@ class ScriptTable(BaseXmlModel, tag="table"):
 class Script(BaseXmlModel, tag="script"):
     id: str = attr()
     output: str = attr()
-    tables: list[ScriptTable] | None = element(default=None)
-    elements: list[ScriptElement] | None = element(default=None)
+    tables: list[ScriptTable] = element(default=[])
+    elements: list[ScriptElement] = element(default=[])
 
 
 class Port(BaseXmlModel, tag="port"):
@@ -117,7 +117,7 @@ class Port(BaseXmlModel, tag="port"):
     state: State
     owner: Owner | None = element(default=None)
     service: Service | None = element(default=None)
-    scripts: list[Script] | None = element(default=None)
+    scripts: list[Script] = element(default=[])
 
 
 class PortUsed(BaseXmlModel, tag="portused"):
@@ -140,7 +140,7 @@ class ExtraPorts(BaseXmlModel, tag="extraports"):
 
 class Ports(BaseXmlModel, tag="ports"):
     extraports: ExtraPorts | None = element(default=None)
-    ports: list[Port] | None = element(default=None)
+    ports: list[Port] = element(default=[])
 
 
 class Hostname(BaseXmlModel, tag="hostname"):
