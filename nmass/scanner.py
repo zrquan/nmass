@@ -134,5 +134,16 @@ class Scanner:
         self._args.extend(("--excludefile", input_filename))
         return self
 
+    def with_most_common_ports(self, top: int) -> Self:
+        """Scan the most common ports (--top-ports).
+
+        :param top: Number of top common ports to scan
+        :raises ValueError: If top is not between 1 and 65535
+        """
+        if not 0 < top <= 65535:
+            raise ValueError(f"invalid argument value {top=}, port number should between 1 to 65535")
+        self._args.extend(("--top-ports", str(top)))
+        return self
+
     def without_closed_ports(self) -> Self:
         raise NotImplementedError()

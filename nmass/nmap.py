@@ -353,20 +353,6 @@ class Nmap(Scanner):
         self._args.append("-r")
         return self
 
-    def with_most_common_ports(self, top: int) -> Self:
-        """Scan the most common ports (--top-ports).
-
-        :param top: Number of top common ports to scan
-        :raises NmapArgumentError: If top is not between 1 and 65535
-        """
-        if not 0 < top <= 65535:
-            raise NmapArgumentError(
-                f"invalid argument value {top=}, port number should between 1 to 65535",
-                nmap_arg="--top-ports",
-            )
-        self._args.extend(("--top-ports", str(top)))
-        return self
-
     def with_port_ratio(self, ratio: float) -> Self:
         """Scan ports more common than a specified ratio (--port-ratio).
 
