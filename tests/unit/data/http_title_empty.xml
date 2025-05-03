@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.92 scan initiated Thu May  1 13:46:47 2025 as: nmap -PN -sV -&#45;script http-title -&#45;open -p 443 -oA script 10.35.10.110 -->
+<nmaprun scanner="nmap" args="nmap -PN -sV --script http-title --open -p 443 -oA script 10.35.10.110" start="1746121607" startstr="Thu May  1 13:46:47 2025" version="7.92" xmloutputversion="1.05">
+  <scaninfo type="connect" protocol="tcp" numservices="1" services="443"/>
+  <verbose level="0"/>
+  <debugging level="0"/>
+  <taskprogress task="Service scan" time="1746121615" percent="0.00"/>
+  <host starttime="1746121607" endtime="1746121689">
+    <status state="up" reason="user-set" reason_ttl="0"/>
+    <address addr="10.35.10.110" addrtype="ipv4"/>
+    <hostnames>
+      <hostname name="ip-10-35-10-110.us-west-2.compute.internal" type="PTR"/>
+    </hostnames>
+    <ports>
+      <port protocol="tcp" portid="443">
+        <state state="open" reason="syn-ack" reason_ttl="0"/>
+        <service name="https" servicefp="SF-Port443-TCP:V=7.92%T=SSL%I=7%D=5/1%Time=6813B397%P=x86_64-redhat-linux-gnu%r(GetRequest,1156,&quot;HTTP/1\.1\x20200\x20OK\r\nX-Frame-Options:\x20SAMEORIGIN\r\nContent-Security-Policy:\x20frame-ancestors\x20'self'\r\nStrict-Transport-Security:\x20max-age=31536000;\x20includeSubdomains\r\nX-XSS-Protection:\x201;\x20mode=block\r\nLast-Modified:\x20Thu,\x2001\x20Jun\x202023\x2022:41:04\x20GMT\r\nContent-Type:\x20text/html\r\nAccept-Ranges:\x20bytes\r\nContent-Length:\x204129\r\n\r\n&lt;!DOCTYPE\x20html&gt;\n&lt;html&gt;\n\x20\x20&lt;head&gt;\n\x20\x20\x20\x20&lt;meta\x20charset=\&quot;utf-8\&quot;&gt;\n\x20\x20\x20\x20&lt;meta\x20http-equiv=\&quot;X-UA-Compatible\&quot;\x20content=\&quot;IE=edge\&quot;&gt;\n\x20\x20\x20\x20&lt;title&gt;&lt;/title&gt;\n\x20\x20\x20\x20&lt;meta\x20name=\&quot;description\&quot;\x20content=\&quot;\&quot;&gt;\n\x20\x20\x20\x20&lt;meta\x20name=\&quot;viewport\&quot;\x20content=\&quot;width=device-width,\x20initial-scale=1\&quot;&gt;\n\n\x20\x20\x20\x20\n&lt;meta\x20name=\&quot;nmbl-gui/config/environment\&quot;\x20content=\&quot;%7B%22modulePrefix%22%3A%22nmbl-gui%22%2C%22podModulePrefix%22%3A%22nmbl-gui%2Ffeatures%22%2C%22environment%22%3A%22production%22%2C%22rootURL%22%3A%22%2F%22%2C%22restApiVersion%22%3A%22v1%22%2C%22namespace%22%3A%22%2FGmdProxy%2Fv1%22%2C%22restHINameSpace%22%3A%22\.\.%2Frest%22%2C%22lo&quot;)%r(HTTPOptions,E0,&quot;HTTP/1\.1\x20200\x20OK\r\nX-Frame-Options:\x20SAMEORIGIN\r\nContent-Security-Policy:\x20frame-ancestors\x20'self'\r\nStrict-Transport-Security:\x20max-age=31536000;\x20includeSubdomains\r\nX-XSS-Protection:\x201;\x20mode=block\r\nAllow:\x20GET,HEAD,POST,OPTIONS\r\n\r\n&quot;)%r(FourOhFourRequest,118F,&quot;HTTP/1\.1\x20404\x20Not\x20Found\r\nX-Frame-Options:\x20SAMEORIGIN\r\nContent-Security-Policy:\x20frame-ancestors\x20'self'\r\nStrict-Transport-Security:\x20max-age=31536000;\x20includeSubdomains\r\nX-XSS-Protection:\x201;\x20mode=block\r\nCache-Control:\x20must-revalidate,no-cache,no-store\r\nLast-Modified:\x20Thu,\x2001\x20Jun\x202023\x2022:41:04\x20GMT\r\nContent-Type:\x20text/html\r\nAccept-Ranges:\x20bytes\r\nContent-Length:\x204129\r\n\r\n&lt;!DOCTYPE\x20html&gt;\n&lt;html&gt;\n\x20\x20&lt;head&gt;\n\x20\x20\x20\x20&lt;meta\x20charset=\&quot;utf-8\&quot;&gt;\n\x20\x20\x20\x20&lt;meta\x20http-equiv=\&quot;X-UA-Compatible\&quot;\x20content=\&quot;IE=edge\&quot;&gt;\n\x20\x20\x20\x20&lt;title&gt;&lt;/title&gt;\n\x20\x20\x20\x20&lt;meta\x20name=\&quot;description\&quot;\x20content=\&quot;\&quot;&gt;\n\x20\x20\x20\x20&lt;meta\x20name=\&quot;viewport\&quot;\x20content=\&quot;width=device-width,\x20initial-scale=1\&quot;&gt;\n\n\x20\x20\x20\x20\n&lt;meta\x20name=\&quot;nmbl-gui/config/environment\&quot;\x20content=\&quot;%7B%22modulePrefix%22%3A%22nmbl-gui%22%2C%22podModulePrefix%22%3A%22nmbl-gui%2Ffeatures%22%2C%22environment%22%3A%22production%22%2C%22rootURL%22%3A%22%2F%22%2C%22restApiVersion%22%3A%22v1%22%2C%22namespace%22%3A%22%2FGmdProxy%&quot;);" tunnel="ssl" method="probed" conf="10"/>
+        <script id="fingerprint-strings" output="&#10;  FourOhFourRequest: &#10;    HTTP/1.1 404 Not Found&#10;    X-Frame-Options: SAMEORIGIN&#10;    Content-Security-Policy: frame-ancestors 'self'&#10;    Strict-Transport-Security: max-age=31536000; includeSubdomains&#10;    X-XSS-Protection: 1; mode=block&#10;    Cache-Control: must-revalidate,no-cache,no-store&#10;    Last-Modified: Thu, 01 Jun 2023 22:41:04 GMT&#10;    Content-Type: text/html&#10;    Accept-Ranges: bytes&#10;    Content-Length: 4129&#10;    &lt;!DOCTYPE html&gt;&#10;    &lt;html&gt;&#10;    &lt;head&gt;&#10;    &lt;meta charset=&quot;utf-8&quot;&gt;&#10;    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;&#10;    &lt;title&gt;&lt;/title&gt;&#10;    &lt;meta name=&quot;description&quot; content=&quot;&quot;&gt;&#10;    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&#10;    &lt;meta name=&quot;nmbl-gui/config/environment&quot; content=&quot;%7B%22modulePrefix%22%3A%22nmbl-gui%22%2C%22podModulePrefix%22%3A%22nmbl-gui%2Ffeatures%22%2C%22environment%22%3A%22production%22%2C%22rootURL%22%3A%22%2F%22%2C%22restApiVersion%22%3A%22v1%22%2C%22namespace%22%3A%22%2FGmdProxy%&#10;  GetRequest: &#10;    HTTP/1.1 200 OK&#10;    X-Frame-Options: SAMEORIGIN&#10;    Content-Security-Policy: frame-ancestors 'self'&#10;    Strict-Transport-Security: max-age=31536000; includeSubdomains&#10;    X-XSS-Protection: 1; mode=block&#10;    Last-Modified: Thu, 01 Jun 2023 22:41:04 GMT&#10;    Content-Type: text/html&#10;    Accept-Ranges: bytes&#10;    Content-Length: 4129&#10;    &lt;!DOCTYPE html&gt;&#10;    &lt;html&gt;&#10;    &lt;head&gt;&#10;    &lt;meta charset=&quot;utf-8&quot;&gt;&#10;    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;&#10;    &lt;title&gt;&lt;/title&gt;&#10;    &lt;meta name=&quot;description&quot; content=&quot;&quot;&gt;&#10;    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&#10;    &lt;meta name=&quot;nmbl-gui/config/environment&quot; content=&quot;%7B%22modulePrefix%22%3A%22nmbl-gui%22%2C%22podModulePrefix%22%3A%22nmbl-gui%2Ffeatures%22%2C%22environment%22%3A%22production%22%2C%22rootURL%22%3A%22%2F%22%2C%22restApiVersion%22%3A%22v1%22%2C%22namespace%22%3A%22%2FGmdProxy%2Fv1%22%2C%22restHINameSpace%22%3A%22..%2Frest%22%2C%22lo&#10;  HTTPOptions: &#10;    HTTP/1.1 200 OK&#10;    X-Frame-Options: SAMEORIGIN&#10;    Content-Security-Policy: frame-ancestors 'self'&#10;    Strict-Transport-Security: max-age=31536000; includeSubdomains&#10;    X-XSS-Protection: 1; mode=block&#10;    Allow: GET,HEAD,POST,OPTIONS">
+          <elem key="FourOhFourRequest">
+    HTTP/1.1 404 Not Found
+    X-Frame-Options: SAMEORIGIN
+    Content-Security-Policy: frame-ancestors 'self'
+    Strict-Transport-Security: max-age=31536000; includeSubdomains
+    X-XSS-Protection: 1; mode=block
+    Cache-Control: must-revalidate,no-cache,no-store
+    Last-Modified: Thu, 01 Jun 2023 22:41:04 GMT
+    Content-Type: text/html
+    Accept-Ranges: bytes
+    Content-Length: 4129
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+    &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta http-equiv="X-UA-Compatible" content="IE=edge"&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;meta name="description" content=""&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+    &lt;meta name="nmbl-gui/config/environment" content="%7B%22modulePrefix%22%3A%22nmbl-gui%22%2C%22podModulePrefix%22%3A%22nmbl-gui%2Ffeatures%22%2C%22environment%22%3A%22production%22%2C%22rootURL%22%3A%22%2F%22%2C%22restApiVersion%22%3A%22v1%22%2C%22namespace%22%3A%22%2FGmdProxy%</elem>
+          <elem key="GetRequest">
+    HTTP/1.1 200 OK
+    X-Frame-Options: SAMEORIGIN
+    Content-Security-Policy: frame-ancestors 'self'
+    Strict-Transport-Security: max-age=31536000; includeSubdomains
+    X-XSS-Protection: 1; mode=block
+    Last-Modified: Thu, 01 Jun 2023 22:41:04 GMT
+    Content-Type: text/html
+    Accept-Ranges: bytes
+    Content-Length: 4129
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+    &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta http-equiv="X-UA-Compatible" content="IE=edge"&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;meta name="description" content=""&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+    &lt;meta name="nmbl-gui/config/environment" content="%7B%22modulePrefix%22%3A%22nmbl-gui%22%2C%22podModulePrefix%22%3A%22nmbl-gui%2Ffeatures%22%2C%22environment%22%3A%22production%22%2C%22rootURL%22%3A%22%2F%22%2C%22restApiVersion%22%3A%22v1%22%2C%22namespace%22%3A%22%2FGmdProxy%2Fv1%22%2C%22restHINameSpace%22%3A%22..%2Frest%22%2C%22lo</elem>
+          <elem key="HTTPOptions">
+    HTTP/1.1 200 OK
+    X-Frame-Options: SAMEORIGIN
+    Content-Security-Policy: frame-ancestors 'self'
+    Strict-Transport-Security: max-age=31536000; includeSubdomains
+    X-XSS-Protection: 1; mode=block
+    Allow: GET,HEAD,POST,OPTIONS</elem>
+        </script>
+        <script id="http-title" output="Site doesn't have a title (text/html).">
+          <elem key="title"/>
+        </script>
+      </port>
+    </ports>
+    <times srtt="782432" rttvar="782432" to="3912160"/>
+  </host>
+  <runstats>
+    <finished time="1746121689" timestr="Thu May  1 13:48:09 2025" summary="Nmap done at Thu May  1 13:48:09 2025; 1 IP address (1 host up) scanned in 81.59 seconds" elapsed="81.59" exit="success"/>
+    <hosts up="1" down="0" total="1"/>
+  </runstats>
+</nmaprun>
