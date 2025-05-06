@@ -672,7 +672,7 @@ wheels = [
 
 [[package]]
 name = "nmass"
-version = "0.2.0.post1"
+version = "0.2.1"
 source = { editable = "." }
 dependencies = [
     { name = "lxml" },

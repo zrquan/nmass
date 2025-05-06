@@ -1,6 +1,6 @@
 [project]
 name = "nmass"
-version = "0.2.0-1"
+version = "0.2.1"
 description = "A python3 library that makes it easier to use nmap and masscan."
 authors = [{ name = "4shen0ne", email = "4shen.01@gmail.com" }]
 readme = "README.md"
