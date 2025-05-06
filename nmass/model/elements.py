@@ -233,7 +233,7 @@ class TaskProgress(BaseXmlModel, tag="taskprogress"):
         return datetime.fromtimestamp(int(value))
 
 
-class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
+class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="unordered"):
     """
     This is the data model that maps with the Nmap (also Masscan) XML output.
     Refer to https://nmap.org/book/nmap-dtd.html for details.
