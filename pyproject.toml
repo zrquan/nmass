@@ -28,11 +28,6 @@ Homepage = "https://zrquan.github.io/nmass/"
 Repository = "https://github.com/zrquan/nmass"
 Documentation = "https://zrquan.github.io/nmass/"
 
-[project.optional-dependencies]
-mcp = [
-    "fastmcp>=2.2.5",
-]
-
 [tool.uv]
 dev-dependencies = [
     "ruff>=0.6.9",
