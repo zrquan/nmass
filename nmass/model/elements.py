@@ -139,7 +139,7 @@ class ExtraPorts(BaseXmlModel, tag="extraports"):
 
 
 class Ports(BaseXmlModel, tag="ports"):
-    extraports: ExtraPorts | None = element(default=None)
+    extraports: list[ExtraPorts] = element(default=[])
     ports: list[Port] = element(default=[])
 
 
