@@ -119,6 +119,46 @@ class Port(BaseXmlModel, tag="port"):
     service: Service | None = element(default=None)
     scripts: list[Script] = element(default=[])
 
+    @property
+    def port_state(self) -> PortState:
+        """Port state (open, closed, filtered, etc.)"""
+        return self.state.state
+
+    @property
+    def reason(self) -> str:
+        """Reason for the port state"""
+        return self.state.reason
+
+    @property
+    def is_open(self) -> bool:
+        """Check if the port is open"""
+        return self.state.state == PortState.open
+
+    @property
+    def service_name(self) -> str | None:
+        """Service name detected on this port"""
+        return self.service.name if self.service else None
+
+    @property
+    def product(self) -> str | None:
+        """Product name detected on this port"""
+        return self.service.product if self.service else None
+
+    @property
+    def service_product(self) -> str | None:
+        """Product name detected on this port (alias for product)"""
+        return self.service.product if self.service else None
+
+    @property
+    def version(self) -> str | None:
+        """Version of the service/product detected"""
+        return self.service.version if self.service else None
+
+    @property
+    def service_version(self) -> str | None:
+        """Version of the service/product detected (alias for version)"""
+        return self.service.version if self.service else None
+
 
 class PortUsed(BaseXmlModel, tag="portused"):
     state: PortState = attr()
@@ -214,6 +254,79 @@ class Host(BaseXmlModel, tag="host"):
     def decode_timestamp(cls, value: str | None) -> datetime | None:
         return datetime.fromtimestamp(int(value)) if value else None
 
+    @property
+    def state(self) -> HostState | None:
+        """Host state (up, down, etc.)"""
+        return self.status.state if self.status else None
+
+    @property
+    def port_list(self) -> list[Port]:
+        """List of scanned ports (flattened from ports.ports)"""
+        return self.ports.ports if self.ports else []
+
+    @property
+    def extra_ports(self) -> list[ExtraPorts]:
+        """Extra ports information"""
+        return self.ports.extraports if self.ports else []
+
+    @property
+    def address(self) -> Address | None:
+        """Primary address of the host"""
+        return self.addresses[0] if self.addresses else None
+
+    @property
+    def ipv4(self) -> str | None:
+        """IPv4 address of the host"""
+        for addr in self.addresses:
+            if addr.addrtype == "ipv4":
+                return addr.addr
+        return None
+
+    @property
+    def ip(self) -> str | None:
+        """Primary IP address of the host (IPv4 if available, otherwise IPv6)"""
+        return self.ipv4 or self.ipv6
+
+    @property
+    def ipv6(self) -> str | None:
+        """IPv6 address of the host"""
+        for addr in self.addresses:
+            if addr.addrtype == "ipv6":
+                return addr.addr
+        return None
+
+    @property
+    def mac(self) -> str | None:
+        """MAC address of the host"""
+        for addr in self.addresses:
+            if addr.addrtype == "mac":
+                return addr.addr
+        return None
+
+    @property
+    def hostname(self) -> str | None:
+        """Primary hostname of the host"""
+        return self.hostnames[0].name if self.hostnames else None
+
+    @property
+    def os_matches(self) -> list[OSMatch] | None:
+        """OS detection matches (flattened from os.osmatches)"""
+        return self.os.osmatches if self.os else None
+
+    @property
+    def os_name(self) -> str | None:
+        """Name of the first OS match (most likely OS)"""
+        if self.os and self.os.osmatches:
+            return self.os.osmatches[0].name
+        return None
+
+    @property
+    def open_ports(self) -> list[Port]:
+        """List of ports that are in the open state"""
+        if not self.ports or not self.ports.ports:
+            return []
+        return [p for p in self.ports.ports if p.state and p.state.state == PortState.open]
+
 
 class HostHint(BaseXmlModel, tag="hosthint"):
     status: Host.Status = element()
@@ -233,7 +346,7 @@ class TaskProgress(BaseXmlModel, tag="taskprogress"):
         return datetime.fromtimestamp(int(value))
 
 
-class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="unordered"):
+class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="ordered"):
     """
     This is the data model that maps with the Nmap (also Masscan) XML output.
     Refer to https://nmap.org/book/nmap-dtd.html for details.
@@ -263,6 +376,52 @@ class NmapRun(BaseXmlModel, tag="nmaprun", search_mode="unordered"):
     taskprogress: list[TaskProgress] | None = element(default=None)
     hosts: list[Host] = element(default=[])
     stats: Stats | None = element(default=None)
+
+    # Convenience properties for better UX
+    @property
+    def host_stats(self) -> dict[str, int] | None:
+        """Statistics about scanned hosts (up, down, total)"""
+        return self.stats.hosts if self.stats else None
+
+    @property
+    def scan_stats(self) -> dict[str, int] | None:
+        """Statistics about scanned hosts (alias for host_stats)"""
+        return self.stats.hosts if self.stats else None
+
+    @property
+    def finished(self) -> dict[str, str] | None:
+        """Scan finish information (time, summary, etc.)"""
+        return self.stats.finished if self.stats else None
+
+    @property
+    def hosts_up(self) -> int:
+        """Number of hosts that are up"""
+        return self.host_stats.get("up", 0) if self.host_stats else 0
+
+    @property
+    def hosts_down(self) -> int:
+        """Number of hosts that are down"""
+        return self.host_stats.get("down", 0) if self.host_stats else 0
+
+    @property
+    def hosts_total(self) -> int:
+        """Total number of hosts scanned"""
+        return self.host_stats.get("total", 0) if self.host_stats else 0
+
+    @property
+    def up_hosts(self) -> list[Host]:
+        """List of hosts that are in the up state"""
+        return [h for h in self.hosts if h.status and h.status.state == HostState.up]
+
+    @property
+    def down_hosts(self) -> list[Host]:
+        """List of hosts that are in the down state"""
+        return [h for h in self.hosts if h.status and h.status.state == HostState.down]
+
+    @property
+    def total_hosts(self) -> int:
+        """Total number of hosts in the scan results"""
+        return len(self.hosts)
 
     def to_html(self, xslt_path: str = "https://nmap.org/svn/docs/nmap.xsl", pretty_print: bool = False) -> str:
         # https://stackoverflow.com/a/34035675
