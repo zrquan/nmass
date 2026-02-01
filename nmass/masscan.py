@@ -55,11 +55,11 @@ class Masscan(Scanner):
         self,
         timeout: float | None = None,
         **kwargs: Unpack[ProcessArgs],
-    ) -> NmapRun | None:
+    ) -> NmapRun:
         """Run masscan command.
 
         :param timeout: Timeout for masscan process, defaults to None
-        :return: NmapRun object or None
+        :return: NmapRun object
         """
         try:
             return self._run_command(timeout, **kwargs)
@@ -74,11 +74,11 @@ class Masscan(Scanner):
         self,
         timeout: float | None = None,
         **kwargs: Unpack[ProcessArgs],
-    ) -> NmapRun | None:
+    ) -> NmapRun:
         """Run masscan command asynchronously.
 
         :param timeout: Timeout for masscan process, defaults to None
-        :return: NmapRun object or None
+        :return: NmapRun object
         """
         try:
             return await self._arun_command(timeout, **kwargs)

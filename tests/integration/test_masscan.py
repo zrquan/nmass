@@ -1,19 +1,14 @@
 import pytest
 
-from nmass.masscan import Masscan
+from tests.integration.conftest import is_root
 
-SCANME = "scanme.nmap.org"
 CRAWLMAZE_IP4 = "216.239.34.21"
-CRAWLMAZE_IP6 = "2001:4860:4802:32::15"
 
 
-@pytest.fixture
-def masscan_bin():
-    return Masscan(bin_path="/usr/bin/masscan")
-
-
-def test_banners(masscan_bin):
-    result = masscan_bin.with_targets(SCANME).with_ports(80, 443).with_banners().run()
+@pytest.mark.skipif(not is_root(), reason="masscan requires root privileges")
+@pytest.mark.integration
+def test_banners(masscan_scanner, localhost):
+    result = masscan_scanner.with_targets(localhost).with_ports(80, 443).with_banners().run()
 
     for host in result.hosts:
         if host.ports is None or host.ports.ports is None:
@@ -28,7 +23,9 @@ def test_banners(masscan_bin):
                     assert srv.banner.startswith("HTTP/1.1")
 
 
+@pytest.mark.skipif(not is_root(), reason="masscan requires root privileges")
+@pytest.mark.integration
 @pytest.mark.asyncio
-async def test_async_run(masscan_bin):
-    result = await masscan_bin.with_targets(CRAWLMAZE_IP4).with_ports(80, 443).arun()
+async def test_async_run(masscan_scanner):
+    result = await masscan_scanner.with_targets(CRAWLMAZE_IP4).with_ports(80, 443).arun()
     assert len(result.hosts) > 0

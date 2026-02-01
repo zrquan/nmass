@@ -3,6 +3,7 @@ import logging
 import shutil
 import subprocess
 from pathlib import Path
+from typing import Any, Callable
 
 from pydantic import BaseModel
 from typing_extensions import Self, Unpack
@@ -11,7 +12,7 @@ from .errors import NmapArgumentError, NmapExecutionError, NmapNotInstalledError
 from .model.elements import Address, NmapRun
 from .model.enums import TCPFlag, TimingTemplate
 from .model.iflist import Interface, InterfaceList, Route
-from .scanner import ProcessArgs, Scanner
+from .scanner import ProcessArgs, ProgressInfo, Scanner
 from .utils import as_root
 
 
@@ -34,7 +35,7 @@ class Nmap(Scanner):
                 raise NmapNotInstalledError()
 
         # fixed options
-        self._args += ["-vvv", "--noninteractive"]
+        self._args += ["-vvv"]
 
     @property
     def info(self) -> NmapInfo:
@@ -56,14 +57,14 @@ class Nmap(Scanner):
         self,
         timeout: float | None = None,
         **kwargs: Unpack[ProcessArgs],
-    ) -> NmapRun | None:
+    ) -> NmapRun:
         """Run nmap command.
 
         :param timeout: Timeout for nmap process, defaults to None
-        :return: NmapRun object or None
+        :return: NmapRun object
         """
         try:
-            return self._run_command(timeout)
+            return self._run_command(timeout, **kwargs)
         except subprocess.CalledProcessError as e:
             raise NmapExecutionError(retcode=e.returncode, message=str(e.stderr))
         except subprocess.TimeoutExpired:
@@ -74,19 +75,26 @@ class Nmap(Scanner):
         self,
         timeout: float | None = None,
         **kwargs: Unpack[ProcessArgs],
-    ) -> NmapRun | None:
+    ) -> NmapRun:
         """Run nmap command asynchronously.
 
         :param timeout: Timeout for nmap process, defaults to None
-        :return: NmapRun object or None
+        :return: NmapRun object
         """
         try:
-            return await self._arun_command(timeout)
+            return await self._arun_command(timeout, **kwargs)
         except subprocess.CalledProcessError as e:
             raise NmapExecutionError(retcode=e.returncode, message=str(e))
         except asyncio.TimeoutError:
             logging.warning("Nmap async scan timed out")
             raise
+
+    def with_progress_callback(self, *callbacks: Callable[[ProgressInfo], Any], stats_every: str = "5s") -> Self:
+        super().with_progress_callback(*callbacks)
+        # Enable periodic status updates when at least one callback is registered.
+        if "--stats-every" not in self._args:
+            self._args.extend(["--stats-every", stats_every])
+        return self
 
     def with_step(self, model: NmapRun) -> Self:
         # masscan 中同一个目标会有多个 host element
